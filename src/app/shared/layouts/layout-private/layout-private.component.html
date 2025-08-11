@@ -1,0 +1,16 @@
+<main>
+  <app-sidebar-private
+    [menuItem]="menuItem">
+  </app-sidebar-private>
+  <section id="template">
+    <app-header-private
+      [titleProcess]="titleProcess"
+      [menuItem]="menuItem"
+      [user]="user"
+    ></app-header-private>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+    <app-footer-private></app-footer-private>
+  </section>
+</main>

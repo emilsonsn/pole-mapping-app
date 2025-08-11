@@ -1,0 +1,16 @@
+<div class="comment-main">
+  <div class="comment-header">
+    <div class="comment-header-info">
+      <app-avatar [imageUrl]="'imageUrl'" [altText]="username" [hidden]="true"></app-avatar>
+      <div class="info-user">
+        <h4>{{'@' + username}}</h4>
+        <p>{{ getDate(date)}}</p>
+      </div>
+    </div>
+    <app-star-rating [rating]="rating"></app-star-rating>
+  </div>
+  <div class="comment-body">
+    <i class="fa-solid fa-quote-left"></i>
+    <p>{{comment}}</p>
+  </div>
+</div>

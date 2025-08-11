@@ -1,0 +1,64 @@
+import { CommonModule } from '@angular/common';
+import { SharedModule } from '@shared/shared.module';
+import { MaintenanceRoutingModule } from './maintenance-routing.module';
+import { TextFieldModule, CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatRippleModule } from '@angular/material/core';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ComponentsModule } from '@shared/components/components.module';
+import { DirectivesModule } from '@shared/directives/directives.module';
+import { PipesModule } from '@shared/pipes/pipes.module';
+import { TablesModule } from '@shared/tables/tables.module';
+import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
+import { ToastrModule } from 'ngx-toastr';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { MaintenanceComponent } from './maintenance/maintenance.component';
+import { MaintenanceHistoryComponent } from './history/maintenance.history.component';
+import { AlbumComponent } from './album/album.component';
+import { MatCardModule } from '@angular/material/card';
+
+@NgModule({
+  declarations: [
+    MaintenanceComponent,
+    MaintenanceHistoryComponent,
+    AlbumComponent
+  ],
+  imports: [
+    CommonModule,
+    TablesModule,
+    ComponentsModule,
+    DirectivesModule,
+    PipesModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatDialogModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    MatDividerModule,
+    MatRippleModule,
+    TextFieldModule,
+    CdkTextareaAutosize,
+    MatIconModule,
+    NgxMaskDirective,
+    NgxMaskPipe,
+    ToastrModule,    
+    SharedModule,
+    MatCardModule,
+    MaintenanceRoutingModule
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  providers: [provideNgxMask()]
+})
+export class Maintenance { }

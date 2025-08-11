@@ -1,0 +1,126 @@
+<div class="home-content">
+  <section class="section-title">
+    <h3>Navegue pelos desafios da vida com a astrologia como seu guia</h3>
+    <p>Comece a sua jornada de autodescoberta hoje ao completar o nosso questionário e receber um plano personalizado
+      feito especialmente para si.</p>
+    <button class="button-home" (click)="navigateToQuiz('/quiz', $event)">Iniciar</button>
+    <h4>Entre no mundo da Astrologia Hiperpersonalizada</h4>
+    <img class="zodiac_sing" src="./assets/images/zodiac-sing.png" alt="logo">
+    <!-- <ng-lottie
+      containerClass="moving-box"
+      [options]="options">
+    </ng-lottie> -->
+    <p>O Zodarium combina dados de diferentes fontes para criar um mapa astrológico personalizado, ao mesmo tempo que
+      oferece orientação amigável e agradável de astrólogos profissionais. A sua abordagem garante insights
+      personalizados
+      que tornam a exploração da astrologia divertida e acessível.</p>
+  </section>
+  <section class="group-cards">
+    <div class="row">
+      @for (item of itemPublic; track item) {
+        <div class="col-lg-6 col-md-12 mb-3">
+          <app-card-guia-public
+            [icon]="item.icon"
+            [title]="item.title"
+            [description]="item.description"
+          ></app-card-guia-public>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section>
+    <div class="sc-32549bd5-0 eODQZr autority">
+      <h3 class="sc-32549bd5-1 iyVSGm mb-3">Aprovado pelos principais<br>meios de comunicação do mundo</h3>
+      <div class="sc-32549bd5-8 dLecif cards-images">
+        <div>
+
+          <div class="sc-32549bd5-3 gCwfVY">
+              <img alt="new-york-times" loading="lazy" width="212" height="30" decoding="async" 
+                   data-nimg="1" class="sc-37068a57-0 DTWSl sc-32549bd5-2 kOknai" 
+                   src="https://appnebula.co/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fnew-york-times.172d2a5e.png&w=1600&q=75" 
+                   style="color: transparent;">
+          </div>
+          <div class="sc-32549bd5-3 sc-32549bd5-4 gCwfVY fmrfZG">
+              <img alt="lifewire" loading="lazy" width="90" height="20" decoding="async" 
+                   data-nimg="1" class="sc-37068a57-0 DTWSl sc-32549bd5-2 kOknai" 
+                   src="https://appnebula.co/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flifewire.653d6908.png&w=1600&q=75" 
+                   style="color: transparent;">
+          </div>
+          <div class="sc-32549bd5-3 gCwfVY">
+              <img alt="refinery" loading="lazy" width="162" height="32" decoding="async" 
+                   data-nimg="1" class="sc-37068a57-0 DTWSl sc-32549bd5-2 kOknai" 
+                   src="https://appnebula.co/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Frefinery.cf89a178.png&w=1600&q=75" 
+                   style="color: transparent;">
+          </div>
+          <div class="sc-32549bd5-3 sc-32549bd5-4 gCwfVY fmrfZG">
+              <img alt="bustle" loading="lazy" width="90" height="24" decoding="async" 
+                   data-nimg="1" class="sc-37068a57-0 DTWSl sc-32549bd5-2 kOknai" 
+                   src="https://appnebula.co/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FbustleDark.58517797.png&w=1600&q=75" 
+                   style="color: transparent;">
+          </div>
+        </div>
+        <div>
+
+          <div class="sc-32549bd5-5 bzSzp">
+            <img alt="urban-list" loading="lazy" width="80" height="29" decoding="async" 
+                 data-nimg="1" class="sc-37068a57-0 DTWSl sc-32549bd5-2 kOknai" 
+                 src="https://appnebula.co/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Furban-list.6d32a265.png&w=1600&q=75" 
+                 style="color: transparent;">
+          </div>
+          <div class="sc-32549bd5-5 bzSzp">
+            <img alt="beebom" loading="lazy" width="112" height="22" decoding="async" 
+                 data-nimg="1" class="sc-37068a57-0 DTWSl sc-32549bd5-2 kOknai" 
+                 src="https://appnebula.co/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fbeebom.927d9f91.png&w=1600&q=75" 
+                 style="color: transparent;">
+          </div>
+          <div class="sc-32549bd5-5 bzSzp">
+            <img alt="hypebae" loading="lazy" width="90" height="24" decoding="async" 
+                 data-nimg="1" class="sc-37068a57-0 DTWSl sc-32549bd5-2 kOknai" 
+                 src="https://appnebula.co/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fhypebae.fec42f13.png&w=1600&q=75" 
+                 style="color: transparent;">
+          </div>
+          <div class="sc-32549bd5-5 bzSzp">
+            <img alt="well-good" loading="lazy" width="288" height="16" decoding="async" 
+                 data-nimg="1" class="sc-37068a57-0 DTWSl sc-32549bd5-2 kOknai" 
+                 src="https://appnebula.co/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fwell-good.093acc4f.png&w=1600&q=75" 
+                 style="color: transparent;">
+        </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="group-cards section-relacionamentos">
+    <h4>Dê um passo em direção a uma vida e relacionamentos mais felizes com milhões de outras pessoas que já estão a
+      beneficiar do Zodarium</h4>
+    <div class="row w-80">
+      @for (item of itemBenefiting; track item) {
+        <div class="col-lg-6 col-md-12 mb-3">
+          <app-card-benefiting-public
+            [title]="item.title"
+            [description]="item.description"
+          ></app-card-benefiting-public>
+        </div>
+      }
+    </div>
+    <button class="button-home" (click)="scrollToTop()">Experimente agora</button>
+  </section>
+
+  <section>
+    <h4>Os utilizadores adoram-nos</h4>
+    <div class="row">
+      @for (item of itemComment; track item) {
+        <div class="col-12 mb-3 d-flex justify-content-center align-items-center">
+          <app-card-comment-public
+            [username]="item.username"
+            [date]="item.date"
+            [comment]="item.comment"
+            [rating]="item.rating"
+          >
+          </app-card-comment-public>
+        </div>
+      }
+    </div>
+  </section>
+</div>

@@ -1,0 +1,100 @@
+<div class="container mt-4">
+  <h3 class="fw-bold mb-3">Nova Manutenção</h3>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <!-- Geolocalização -->
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Endereço</mat-label>
+        <input matInput formControlName="address" readonly />
+      </mat-form-field>
+    </div>
+    <div class="col-md-6 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Bairro</mat-label>
+        <input matInput formControlName="neighborhood" readonly />
+      </mat-form-field>
+    </div>
+    <div class="col-md-6 mb-3">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Cidade</mat-label>
+        <input matInput formControlName="city" readonly />
+      </mat-form-field>
+    </div>
+  </div>
+
+
+    <button
+      mat-raised-button
+      color="primary"
+      class="mb-4"
+      type="button"
+      (click)="getLocation()"
+    >
+      Obter Geolocalização
+    </button>
+
+    <!-- Botão de foto -->
+    <div class="mb-3">
+      <input
+        type="file"
+        accept="image/*"
+        capture="environment"
+        hidden
+        id="cameraInput"
+        (change)="onPhotoSelected($event)"
+      />
+      <button
+        mat-raised-button
+        color="accent"
+        type="button"
+        [disabled]="!locationFetched"
+        (click)="triggerCamera()"
+      >
+        Tirar Evidência Fotográfica
+      </button>
+    </div>
+
+    <!-- Preview e confirmação -->
+    <div *ngIf="imagePreview" class="mb-3 text-center">
+      <img
+        [src]="imagePreview"
+        alt="Preview"
+        class="img-thumbnail mb-2"
+        style="max-width: 300px;"
+      />
+      <div>
+        <button
+          mat-button
+          color="primary"
+          (click)="confirmPhoto()"
+          [disabled]="photoConfirmed"
+        >
+          Confirmar Foto
+        </button>
+        <button mat-button color="warn" (click)="discardPhoto()">
+          Descartar Foto
+        </button>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="text-end mt-4">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="!form.valid || !photoConfirmed || loading"
+      >
+        <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+        <span *ngIf="!loading">Enviar Dados</span>
+      </button>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="loading" 
+     class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-50">
+  <mat-spinner></mat-spinner>
+</div>

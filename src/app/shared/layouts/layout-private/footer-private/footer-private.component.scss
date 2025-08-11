@@ -1,0 +1,17 @@
+@import "variables";
+
+footer {
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+  p {
+    text-align: center;
+    margin: 1rem 0 0;
+    font-size: 0.9rem;
+    color: #666;
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+  }
+}

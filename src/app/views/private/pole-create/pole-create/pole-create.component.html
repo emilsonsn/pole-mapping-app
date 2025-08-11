@@ -1,0 +1,109 @@
+<div *ngIf="!qrcodeDetected" class="text-center">
+  <button class="btn btn-primary" (click)="scanQRCode()">Escanear QR Code</button>
+
+  <p class="mt-2">Aponte para o QR Code do poste</p>
+
+  <p *ngIf="qrResult" class="alert alert-success text-center">
+    QR Code lido: {{ qrResult }}
+  </p>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="submit()" *ngIf="qrcodeDetected">
+  <div class="form-grid row">
+    <div class="{{ field.class }}" *ngFor="let field of locationFields">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>{{ field.label }}</mat-label>
+        <input matInput type="text" [formControlName]="field.value" [readonly]="true" />
+      </mat-form-field>
+    </div>
+
+    <div class="form-item">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Tipo</mat-label>
+        <mat-select formControlName="type_id">
+          <mat-option *ngFor="let item of types" [value]="item.id">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-item">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Altura</mat-label>
+        <input matInput type="number" formControlName="height" />
+      </mat-form-field>
+    </div>
+
+    <div class="form-item">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Pavimentação</mat-label>
+        <mat-select formControlName="paving_id">
+          <mat-option *ngFor="let item of pavings" [value]="item.id">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-item">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Posição</mat-label>
+        <mat-select formControlName="position_id">
+          <mat-option *ngFor="let item of positions" [value]="item.id">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-item">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Tipo de Rede</mat-label>
+        <mat-select formControlName="network_type_id">
+          <mat-option *ngFor="let item of networkTypes" [value]="item.id">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-item">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Tipo de Conexão</mat-label>
+        <mat-select formControlName="connection_type_id">
+          <mat-option *ngFor="let item of connectionTypes" [value]="item.id">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-item">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Transformador</mat-label>
+        <mat-select formControlName="transformer_id">
+          <mat-option *ngFor="let item of transformers" [value]="item.id">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-item">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Acesso</mat-label>
+        <mat-select formControlName="access_id">
+          <mat-option *ngFor="let item of accesses" [value]="item.id">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-12">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Qtd. Iluminação</mat-label>
+        <mat-select formControlName="luminaire_quantity">
+          <mat-option *ngFor="let item of [1, 2, 3, 4, 5]" [value]="item">{{ item }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="text-end mb-2" *ngIf="!poleExist">
+    <button matRipple id="submit" class="btn btn-primary" [disabled]="form.invalid || loading">
+      Salvar Poste
+    </button>
+  </div>
+</form>
+
+<div *ngIf="qrcodeDetected && poleExist" class="alert alert-info">
+  Poste já cadastrado! Dados carregados.
+</div>

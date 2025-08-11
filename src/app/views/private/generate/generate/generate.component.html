@@ -1,0 +1,89 @@
+<button
+class="btn btn-primary"
+(click)="goToAll()"
+>
+  Ver relatórios gerados
+</button>
+
+
+<form [formGroup]="form" class="mt-3">
+    <div class="row">
+
+        <div class="col-md-6 mb-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Nome</mat-label>
+              <input formControlName="name" matInput type="text"
+              placeholder="000 000 000">
+            </mat-form-field>
+        </div>
+
+        <div class="col-md-6 col-12 mb-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Gênero</mat-label>
+            <mat-select formControlName="gender" placeholder="Seu gênero">
+              <mat-option [value]="'male'">Homem</mat-option>
+              <mat-option [value]="'female'">Mulher</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6 col-12 mb-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Local de nascimento</mat-label>
+            <input matInput [formControl]="cityControl" [matAutocomplete]="auto" placeholder="Digite o nome da cidade">
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option *ngFor="let location of cities" [value]="location.city + ', ' + location.state + ', ' + location.country">
+                {{location.city}},
+                {{location.state}},
+                {{location.country}},
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>        
+
+        <div class="col-md-6 mb-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Momento do nascimento</mat-label>
+              <input formControlName="birth" matInput type="datetime-local"
+              placeholder="000 000 000">
+            </mat-form-field>
+        </div>
+
+        <div class="col-md-6 mb-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input formControlName="email" matInput type="email" placeholder="000 000 000">
+            </mat-form-field>
+        </div>
+
+        <div class="col-md-6 mb-2">
+          <mat-form-field appearance="outline">
+            <mat-label>Telefone</mat-label>
+            <input formControlName="whatsapp" matInput type="phone" [mask]="'000 000 000'"
+            placeholder="000 000 000">
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-12 col-12 mb-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Relatorios</mat-label>
+              <mat-select formControlName="reports" placeholder="Relatórios" multiple>
+                <mat-option *ngFor="let product of products" [value]="product.id">{{ product.title }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div class="col-md-12 col-12 mb-2">
+            <button
+            style="width: 100%;"
+            class="btn btn-primary"
+            id="submit"
+            [disabled]="!form.valid"
+            (click)="onSubmit()"
+            >
+              Gerar relatório
+            </button>
+        </div>
+
+    </div>
+  </form>

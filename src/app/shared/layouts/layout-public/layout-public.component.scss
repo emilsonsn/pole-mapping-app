@@ -1,0 +1,64 @@
+@import "variables";
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.layout-public-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+}
+
+
+// Telas grandes
+@media (min-width: $breakpoint-lg) {
+  // Estilos para telas grandes
+  .layout-public-content {
+    padding-left: 20rem !important;
+    padding-right: 20rem !important;
+  }
+}
+
+// Laptops
+@media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg - 1) {
+  .layout-public-content {
+    padding-left: 10rem !important;
+    padding-right: 10rem !important;
+  }
+}
+
+// Tablets
+@media (min-width: $breakpoint-sm) and (max-width: $breakpoint-md - 1) {
+  .layout-public-content {
+    padding-left: 5rem !important;
+    padding-right: 5rem !important;
+  }
+}
+
+// Smartphones grandes
+@media (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm - 1) {
+  .layout-public-content {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+// Smartphones pequenos
+@media (max-width: $breakpoint-xs - 1) {
+  .layout-public-content {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: $background-color !important;
+}

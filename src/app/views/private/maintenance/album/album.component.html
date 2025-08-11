@@ -1,0 +1,37 @@
+<div class="container mt-4">
+  <h3 class="fw-bold mb-3">Álbum de Manutenções</h3>
+
+  <mat-spinner *ngIf="loading" class="mx-auto my-5 d-block"></mat-spinner>
+
+  <div *ngIf="!loading && images.length > 0" class="row g-4">
+    <div class="col-6 col-md-6 col-lg-4 col-xl-3" *ngFor="let img of images">
+      <mat-card class="album-card h-100">
+        <img
+          mat-card-image
+          [src]="img.photo_path"
+          alt="Evidência"
+          (click)="openImage(img.photo_path)"
+        />
+        <mat-card-content>
+          <small class="text-muted d-block">{{ img.created_at | date:'shortDate' }}</small>
+          <small class="text-muted">{{ img.photo_path }} - {{ img.neighborhood }}</small>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && images.length === 0" class="alert alert-info mt-4">
+    Nenhuma imagem encontrada.
+  </div>
+</div>
+
+<!-- Modal de visualização -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content bg-dark">
+      <div class="modal-body p-0">
+        <img [src]="selectedImage" class="img-fluid w-100" alt="Imagem ampliada">
+      </div>
+    </div>
+  </div>
+</div>

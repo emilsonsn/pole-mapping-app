@@ -1,0 +1,103 @@
+<mat-dialog-content>
+
+  @if(loading) {
+  <div matRipple class="me-auto me-sm-0 mb-sm-0 mb-2 loading">
+    <mat-spinner></mat-spinner>
+  </div>
+  }
+
+  <div class="d-flex align-items-center justify-content-between">
+    <span class="fw-bold fs-5">{{title + 'produto'}}</span>
+    <div matRipple class="close" (click)="onCancel()">
+      <i class="fa-solid fa-close"></i>
+    </div>
+  </div>
+
+  <mat-divider class="my-3"></mat-divider>
+
+  <form [formGroup]="form">
+    <div class="row">
+
+      <div class="col-md-6 mb-3">
+        <mat-form-field appearance="outline">
+          <mat-label>Titulo</mat-label>
+          <input matInput type="text" formControlName="title">
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6 col-12 mb-3">
+        <mat-form-field appearance="outline">
+          <mat-label>Tipo</mat-label>
+          <mat-select formControlName="type" placeholder="Status">
+            <mat-option *ngFor="let type of productTypes" [value]="type"> {{ type | productType }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <mat-form-field appearance="outline">
+          <mat-label>Valor</mat-label>
+          <input matInput type="text" formControlName="amount" mask="separator.2" prefix="€ ">
+        </mat-form-field>
+      </div>      
+
+      <div class="col-md-6 col-12 mb-3">
+        <mat-form-field appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="is_active" placeholder="Status">
+            <mat-option [value]="true"> Ativo</mat-option>
+            <mat-option [value]="false"> Inativo</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-md-12 col-12 mb-3">
+        <mat-form-field appearance="outline">
+          <mat-label>Relatório</mat-label>
+          <mat-select formControlName="report" placeholder="Relatório">
+            <mat-option *ngFor="let report of reports" [value]="report.id"> {{ report.description }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      @for(img of filesToSend; track img) {
+        <div class="d-flex flex-column gap-1" style="max-width: 100%;">
+          <div class="file">
+            <div class="delete">
+              <i class="fa-solid fa-close" (click)="removeFileFromSendToFiles($index);"></i>
+            </div>
+            @if(img.preview) {
+            <img [src]="img.preview" style="max-width: 100px;" />
+            }
+            @else {
+            <i class="fa-solid fa-file"></i>
+            }
+          </div>
+        </div>
+        }
+
+      <div *ngIf="!filesToSend.length" matRipple id="inputFileAdd" class="mt-2">
+        <div id="text">
+          <i class="fa-solid fa-plus"></i>
+          <span>Adicionar Arquivo</span>
+        </div>
+        <input type="file" (change)="onFileSelected($event)" [multiple]="true" title=" " />
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <div class="container">
+    <div id="actionsDialog" class="flex-sm-row flex-column">
+      <div id="buttonsDialog" class="flex-sm-row flex-column">
+        <div class="col-auto">
+          <button matRipple id="cancel" class="button cancel" (click)="onCancel()">Cancelar</button>
+        </div>
+        <div class="col-auto">
+          <button matRipple id="submit" class="button primary" (click)="onSubmit(form)">{{isNew ? 'Criar' :
+            'Salvar'}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-actions>
