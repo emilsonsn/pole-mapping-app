@@ -5,6 +5,6 @@ export const environment = {
   appName: 'Lumcal',
   public: "/",
   private: "/painel",
-  api: 'http://192.168.0.11:8000/api',
+  api: 'https://app.aptaimport.com.br/api',
   version: require('../../package.json').version
 };
