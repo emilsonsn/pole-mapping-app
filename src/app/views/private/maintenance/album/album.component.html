@@ -6,15 +6,10 @@
   <div *ngIf="!loading && images.length > 0" class="row g-4">
     <div class="col-6 col-md-6 col-lg-4 col-xl-3" *ngFor="let img of images">
       <mat-card class="album-card h-100">
-        <img
-          mat-card-image
-          [src]="img.photo_path"
-          alt="Evidência"
-          (click)="openImage(img.photo_path)"
-        />
+        <img mat-card-image [src]="img.photo_path" alt="Evidência" (click)="openImage(img.photo_path)" />
         <mat-card-content>
-          <small class="text-muted d-block">{{ img.created_at | date:'shortDate' }}</small>
-          <small class="text-muted">{{ img.photo_path }} - {{ img.neighborhood }}</small>
+          <small class="text-muted d-block">{{ img.created_at | date:'dd/MM/yyyy' }}</small>
+          <small class="text-muted">{{ img.address }} - {{ img.neighborhood }}</small>
         </mat-card-content>
       </mat-card>
     </div>
@@ -25,12 +20,14 @@
   </div>
 </div>
 
-<!-- Modal de visualização -->
 <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content bg-dark">
-      <div class="modal-body p-0">
-        <img [src]="selectedImage" class="img-fluid w-100" alt="Imagem ampliada">
+      <div class="modal-header border-0">
+        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0 text-center">
+        <img [src]="selectedImage" class="album-modal-img" alt="Imagem ampliada">
       </div>
     </div>
   </div>

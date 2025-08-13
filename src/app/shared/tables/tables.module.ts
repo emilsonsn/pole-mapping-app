@@ -8,11 +8,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { PipesModule } from '@shared/pipes/pipes.module';
 import { TableProductComponent } from './table-product/table-product.component';
 import { TableGeneratedComponent } from './table-generated/table-generated.component';
+import { TableHistoryComponent } from './table-history/table-history.component';
 
 const tables = [
   TableClientComponent,
   TableProductComponent,
-  TableGeneratedComponent
+  TableGeneratedComponent,
+  TableHistoryComponent
 ];
 
 @NgModule({

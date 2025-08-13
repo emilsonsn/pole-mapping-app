@@ -16,7 +16,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ComponentsModule } from '@shared/components/components.module';
 import { DirectivesModule } from '@shared/directives/directives.module';
 import { PipesModule } from '@shared/pipes/pipes.module';
-import { TablesModule } from '@shared/tables/tables.module';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { ToastrModule } from 'ngx-toastr';
 
@@ -26,7 +25,6 @@ import { ToastrModule } from 'ngx-toastr';
   ],
   imports: [
     CommonModule,
-    TablesModule,
     ComponentsModule,
     DirectivesModule,
     PipesModule,

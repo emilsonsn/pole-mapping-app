@@ -6,31 +6,13 @@ import { MaintenanceService } from '@services/maintenance.service';
   templateUrl: './maintenance-history.component.html',
   styleUrls: ['./maintenance-history.component.scss']
 })
-export class MaintenanceHistoryComponent implements OnInit {
-  maintenances: any[] = [];
-  selected: any = null;
+export class MaintenanceHistoryComponent {
   loading = false;
+  filters: any = {};
+  searchTerm = '';
+  selected: any = null;
 
-  constructor(private service: MaintenanceService) {}
-
-  ngOnInit(): void {
-    this.fetch();
-  }
-
-  fetch() {
-    this.loading = true;
-    this.service.all().subscribe({
-      next: (res) => {
-        this.maintenances = res;
-        this.loading = false;
-      },
-      error: () => {
-        this.loading = false;
-      }
-    });
-  }
-
-  selectRow(item: any) {
+  onRowClick(item: any) {
     this.selected = item;
   }
 

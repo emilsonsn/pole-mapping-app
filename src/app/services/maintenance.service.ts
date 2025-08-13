@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '@env/environment';
 import { Observable } from 'rxjs';
@@ -17,4 +17,20 @@ export class MaintenanceService {
     return this.http.get<any[]>(this.baseUrl);
   }
 
+ list(params?: {
+    search?: string;
+    page?: number;
+    take?: number;
+    order_field?: string;
+    order?: 'ASC' | 'DESC';
+    start?: string;
+    end?: string;
+  }): Observable<any> {
+    let httpParams = new HttpParams();
+    Object.entries(params || {}).forEach(([k, v]) => {
+      if (v !== undefined && v !== null && v !== '') httpParams = httpParams.set(k, String(v));
+    });
+    return this.http.get<any>(`${this.baseUrl}/list`, { params: httpParams });
+  }
+  
 }

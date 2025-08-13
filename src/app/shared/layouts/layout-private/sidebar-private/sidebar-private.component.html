@@ -10,6 +10,7 @@
 
   <ul class="components">
     <li [ngClass]="item.children ? 'dropdown' : 'menu'" *ngFor="let item of menuItem" [routerLinkActive]="'active'"
+      [routerLinkActiveOptions]="{ exact: true }"
         (click)="item.children ? toggleDropdown(item) : navigateToRoute(item, $event)">
       <a [routerLink]="item.children ? null : item.route">
         <i [class]="item.icon" style="width: 25px"></i>
