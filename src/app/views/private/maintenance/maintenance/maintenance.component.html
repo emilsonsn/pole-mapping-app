@@ -35,26 +35,18 @@
       Obter Geolocalização
     </button>
 
-    <!-- Botão de foto -->
     <div class="mb-3">
-      <input
-        type="file"
-        accept="image/*"
-        capture="environment"
-        hidden
-        id="cameraInput"
-        (change)="onPhotoSelected($event)"
-      />
       <button
         mat-raised-button
         color="accent"
         type="button"
         [disabled]="!locationFetched"
-        (click)="triggerCamera()"
+        (click)="takePhoto()"
       >
         Tirar Evidência Fotográfica
       </button>
     </div>
+
 
     <!-- Preview e confirmação -->
     <div *ngIf="imagePreview" class="mb-3 text-center">

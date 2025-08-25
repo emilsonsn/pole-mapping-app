@@ -3,6 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MaintenanceService } from '@services/maintenance.service';
 import { ToastrService } from 'ngx-toastr';
 import { Geolocation } from '@capacitor/geolocation';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Capacitor } from '@capacitor/core';
+// import { Capacitor } from '@capacitor/core'; // se quiser lógica condicional por plataforma
 
 @Component({
   selector: 'app-maintenance',
@@ -31,16 +34,17 @@ export class MaintenanceComponent {
     });
   }
 
-  ngOnInit(){
+  ngOnInit() {
     this.getLocation();
   }
 
   async getLocation() {
     try {
       this.loading = true;
+
+      // apenas uma chamada já basta
       await Geolocation.requestPermissions();
 
-      const permission = await Geolocation.requestPermissions();
       const position = await Geolocation.getCurrentPosition({
         enableHighAccuracy: true,
       });
@@ -48,38 +52,67 @@ export class MaintenanceComponent {
       const lat = position.coords.latitude.toFixed(6);
       const lng = position.coords.longitude.toFixed(6);
 
-      const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+      );
       const data = await response.json();
       const address = data.address || {};
 
       this.form.patchValue({
         latitude: lat,
         longitude: lng,
-        address: `${address.road || ''}, ${address.house_number || ''}`.trim(),
+        address: `${address.road || ''}${address.house_number ? ', ' + address.house_number : ''}`.trim(),
         neighborhood: address.suburb || address.neighbourhood || '',
         city: address.city || address.town || address.village || '',
       });
 
       this.locationFetched = true;
-      this.loading = false;
-
     } catch (error) {
       console.error('Erro ao obter localização', error);
+      this.toast.error('Não foi possível obter sua localização.');
+    } finally {
+      this.loading = false;
     }
   }
 
+  async takePhoto() {
+    try {
+      if (!Capacitor.isNativePlatform()) {
+        throw new Error('camera_unavailable_on_web');
+      }
 
-  onPhotoSelected(event: any) {
-    const file = event.target.files?.[0];
-    if (!file) return;
+      await Camera.requestPermissions({ permissions: ['camera'] });
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imagePreview = reader.result as string;
+      const photo = await Camera.getPhoto({
+        source: CameraSource.Camera,
+        resultType: CameraResultType.Base64,
+        quality: 80,
+        allowEditing: false,
+        saveToGallery: false
+      });
+
+      this.imagePreview = `data:image/jpeg;base64,${photo.base64String}`;
       this.photoConfirmed = false;
-    };
-    reader.readAsDataURL(file);
-    this.form.patchValue({ photo: file });
+
+      const base64 = photo.base64String!;
+      const byteString = atob(base64);
+      const arrayBuffer = new ArrayBuffer(byteString.length);
+      const uint8Array = new Uint8Array(arrayBuffer);
+      for (let i = 0; i < byteString.length; i++) {
+        uint8Array[i] = byteString.charCodeAt(i);
+      }
+      const blob = new Blob([uint8Array], { type: 'image/jpeg' });
+      const file = new File([blob], `evidencia_${Date.now()}.jpg`, { type: 'image/jpeg' });
+
+      this.form.patchValue({ photo: file });
+    } catch (e: any) {
+      if (e?.message === 'camera_unavailable_on_web') {
+        this.toast.error('Abra o app Android (não o navegador) para tirar a foto.');
+      } else {
+        this.toast.error('Não foi possível abrir a câmera.');
+        console.error('Erro ao tirar foto', e);
+      }
+    }
   }
 
   confirmPhoto() {
@@ -122,10 +155,4 @@ export class MaintenanceComponent {
       }
     });
   }
-
-  triggerCamera(): void {
-    const input = document.getElementById('cameraInput') as HTMLInputElement | null;
-    if (input) input.click();
-  }
-
 }
