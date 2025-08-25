@@ -65,7 +65,6 @@ export class MaintenanceComponent {
 
     } catch (error) {
       console.error('Erro ao obter localização', error);
-      this.toast.error('Não foi possível obter a localização via GPS.');
     }
   }
 

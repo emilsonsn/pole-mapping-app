@@ -36,7 +36,7 @@ export class LayoutPrivateComponent {
       active: true
     },
     {
-      label: 'Manutênção',
+      label: 'Manutenções',
       icon: 'fa-solid fa-user',
       route: '/painel/maintenance',
       active: true
@@ -68,7 +68,6 @@ export class LayoutPrivateComponent {
 
   ngOnInit(): void {
     this._sessionQuery.user$.subscribe(user => {
-      console.log(user);
       this.user = user;
     })
 

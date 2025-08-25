@@ -48,6 +48,7 @@ export class SidebarPrivateComponent {
     if (!item.route) return;
 
     this.router.navigate([item.route]).then(() => this.updateActiveRoutes());
+    this.toggleShowSidebar();
   }
 
   routerActive(child: IMenuItem) {

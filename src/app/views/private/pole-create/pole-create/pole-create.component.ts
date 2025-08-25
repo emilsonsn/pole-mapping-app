@@ -54,6 +54,7 @@ export class PoleCreateComponent implements OnInit {
       city: ['', Validators.required],
       type_id: ['', Validators.required],
       height: ['', Validators.required],
+      remote_management_relay: [''],
       paving_id: ['', Validators.required],
       position_id: ['', Validators.required],
       network_type_id: ['', Validators.required],
@@ -63,7 +64,7 @@ export class PoleCreateComponent implements OnInit {
       luminaire_quantity: ['0', Validators.required],
     });
     this.loadOptions();
-      this.getLocation();
+    this.getLocation();
   }
 
   async getLocation() {
@@ -107,9 +108,7 @@ export class PoleCreateComponent implements OnInit {
         this.transformers = res.transformers;
         this.accesses = res.accesses;
       },
-      error: () => {
-        this.toast.error('Erro ao carregar dados auxiliares.');
-      }
+      error: () => {}
     });
   }
 

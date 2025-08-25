@@ -1,0 +1,8 @@
+{
+  "android": {
+    "iconBackgroundColor": "#FFFFFF",
+    "iconBackgroundSource": "resources/logo_fundo_branco.png",
+    "splashBackgroundColor": "#FFFFFF",
+    "splashBackgroundSource": "resources/logo_fundo_branco.png"
+  }
+}

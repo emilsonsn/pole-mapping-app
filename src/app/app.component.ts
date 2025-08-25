@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Title} from "@angular/platform-browser";
 import {environment} from "@env/environment";
+import { App } from '@capacitor/app'
+import { Capacitor } from '@capacitor/core'
 
 @Component({
   selector: 'app-root',
@@ -13,5 +15,11 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.titleService.setTitle(environment.appName);
+
+    if (Capacitor.getPlatform() === 'android') {
+      App.addListener('backButton', ({ canGoBack }) => {
+        if (window.confirm('Deseja realmente sair?')) App.exitApp()
+      })
+    }    
   }
 }

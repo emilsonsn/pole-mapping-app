@@ -78,7 +78,6 @@ export class GenerateComponent {
 
     if(!this.form.valid){
       this.form.markAllAsTouched();
-      console.log(this.form.controls);
       return;
     }
 

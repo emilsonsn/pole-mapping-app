@@ -1,7 +1,7 @@
 declare const require: any;
 
 export const environment = {
-  production: false,
+  production: true,
   appName: 'Lumcal',
   public: "/",
   private: "/painel",

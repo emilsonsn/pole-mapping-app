@@ -20,7 +20,6 @@ export class AlbumComponent implements OnInit {
     this.loading = true;
     this.service.all().subscribe({
       next: (res) => {
-        console.log(this.images);
         this.images = res.filter(m => m.photo_path);
         this.loading = false;
       },

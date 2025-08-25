@@ -72,7 +72,6 @@ export class TableHistoryComponent implements OnInit {
       .pipe(finalize(() => this._toggleLoading()))
       .subscribe({
         next: (res: any) => {
-          console.log(res);
           this.maintenances = (res.data || res.items || []).map((m: any) => ({
             ...m,
             address_full: `${m.address} - ${m.neighborhood} - ${m.city}`
@@ -80,7 +79,7 @@ export class TableHistoryComponent implements OnInit {
           this.pageControl.itemCount = res.itemCount ?? res.total ?? 0;
           this.pageControl.pageCount = res.pageCount ?? Math.ceil((this.pageControl.itemCount || 0) / this.pageControl.take);
         },
-        error: () => this.toast.error('Erro ao carregar histórico')
+        error: () => {}
       });
   }
 
