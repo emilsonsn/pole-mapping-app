@@ -5,7 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 import { Geolocation } from '@capacitor/geolocation';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
-// import { Capacitor } from '@capacitor/core'; // se quiser lógica condicional por plataforma
+import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
+import { PoleService } from '@services/pole.service';
 
 @Component({
   selector: 'app-maintenance',
@@ -22,9 +23,11 @@ export class MaintenanceComponent {
   constructor(
     private fb: FormBuilder,
     private service: MaintenanceService,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private poleService: PoleService
   ) {
     this.form = this.fb.group({
+      pole_id: ['', Validators.required],
       latitude: ['', Validators.required],
       longitude: ['', Validators.required],
       address: ['', Validators.required],
@@ -35,8 +38,38 @@ export class MaintenanceComponent {
   }
 
   ngOnInit() {
-    this.getLocation();
   }
+
+  async scanQRCode() {
+    try {
+      const { barcodes } = await BarcodeScanner.scan();
+      if (barcodes.length === 0) return;
+
+      const qrcode = barcodes[0].rawValue;
+
+      this.loading = true;
+      this.poleService.getByQrCode(qrcode).subscribe({
+        next: (pole) => {
+          if (pole?.id) {
+            this.toast.success('Poste encontrado!');
+            this.form.patchValue({ pole_id: pole.id });
+            this.getLocation();
+          } else {
+            this.toast.error('Poste não encontrado!');
+          }
+          this.loading = false;
+        },
+        error: () => {
+          this.toast.error('Erro ao buscar poste.');
+          this.loading = false;
+        },
+      });
+    } catch (error) {
+      this.toast.error('Erro ao escanear QR Code.');
+      console.error(error);
+    }
+  }
+
 
   async getLocation() {
     try {
@@ -129,9 +162,12 @@ export class MaintenanceComponent {
   }
 
   submit() {
-    if (this.form.invalid || !this.photoConfirmed) return;
-
+    if (this.form.invalid || !this.photoConfirmed) {
+      this.toast.error('Preencha todos os campos obrigatórios.');
+      return;
+    }
     const formData = new FormData();
+    formData.append('pole_id', this.form.get('pole_id')?.value);
     formData.append('latitude', this.form.get('latitude')?.value);
     formData.append('longitude', this.form.get('longitude')?.value);
     formData.append('address', this.form.get('address')?.value);

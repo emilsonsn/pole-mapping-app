@@ -62,20 +62,25 @@ export class LoginComponent implements OnInit {
 
   async onSubmit() {
     if (this.loginForm.valid) {
-      this.loading = true;
-      this.loginForm.disable();
-      const { username, password } = this.loginForm.getRawValue();
-      await this._sessionService.login(username, password);
-      
-      await lastValueFrom(this._sessionService.getUserFromBack());
-
-      this.loginForm.enable();
-      this.loading = false;
-
-      this._sessionQuery.user$.subscribe((user) => {
-        this.user = user;
-      });
-      this._router.navigate(['/painel/home']);
+      try{
+        this.loading = true;
+        this.loginForm.disable();
+        const { username, password } = this.loginForm.getRawValue();
+        await this._sessionService.login(username, password);
+        
+        await lastValueFrom(this._sessionService.getUserFromBack());
+  
+        this.loginForm.enable();
+        this.loading = false;
+  
+        this._sessionQuery.user$.subscribe((user) => {
+          this.user = user;
+        });
+        this._router.navigate(['/painel/home']);
+      } catch (error) {
+        this.loginForm.enable();
+        this.loading = false;
+      }
     }
   }
 }

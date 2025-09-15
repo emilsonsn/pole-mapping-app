@@ -1,7 +1,15 @@
 <div class="container mt-4">
   <h3 class="fw-bold mb-3">Nova Manutenção</h3>
 
-  <form [formGroup]="form" (ngSubmit)="submit()">
+  <div *ngIf="!form.get('pole_id')?.value" class="text-center">
+    <button mat-raised-button color="primary" (click)="scanQRCode()">
+      Escanear QR Code do Poste
+    </button>
+    <p class="mt-2">Escaneie o QR Code para registrar a manutenção.</p>
+  </div>
+
+  <form *ngIf="form.get('pole_id')?.value" [formGroup]="form" (ngSubmit)="submit()">
+
     <!-- Geolocalização -->
   <div class="row">
     <div class="col-md-6 mb-3">
