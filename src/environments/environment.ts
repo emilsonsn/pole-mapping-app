@@ -6,5 +6,6 @@ export const environment = {
   public: "/",
   private: "/painel",
   api: 'https://app.aptaimport.com.br/api',
+  // api: 'http://192.168.0.8:8000/api',
   version: require('../../package.json').version
 };
