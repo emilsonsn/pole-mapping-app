@@ -7,7 +7,7 @@ import { forkJoin } from 'rxjs';
 export class AuxiliaryService {
   constructor(private http: HttpClient) {}
 
-    private readonly baseUrl = `${environment.api}`;
+  private readonly baseUrl = `${environment.api}`;
 
   getAll() {
     return forkJoin({
@@ -18,6 +18,11 @@ export class AuxiliaryService {
       connectionTypes: this.http.get<any[]>(this.baseUrl + '/connection-types'),
       transformers: this.http.get<any[]>(this.baseUrl + '/transformers'),
       accesses: this.http.get<any[]>(this.baseUrl + '/accesses'),
+      characteristics: this.http.get<any[]>(this.baseUrl + '/characteristics'),
+      arms: this.http.get<any[]>(this.baseUrl + '/arms'),
+      lamps: this.http.get<any[]>(this.baseUrl + '/lamps'),
+      powers: this.http.get<any[]>(this.baseUrl + '/powers'),
+      reactors: this.http.get<any[]>(this.baseUrl + '/reactors'),
     });
   }
 }

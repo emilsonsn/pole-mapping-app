@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { PoleService } from '@services/pole.service';
 import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 import { ToastrService } from 'ngx-toastr';
@@ -19,6 +19,7 @@ export class PoleCreateComponent implements OnInit {
   qrResult = '';
   qrcodeDetected = false;
   poleExist = false;
+  manualQrCode = this.fb.control('');
 
   locationFields = [
     { value: 'latitude', label: 'Latitude', class: 'form-item'},
@@ -36,6 +37,11 @@ export class PoleCreateComponent implements OnInit {
   connectionTypes: any[] = [];
   transformers: any[] = [];
   accesses: any[] = [];
+  characteristics: any[] = [];
+  arms: any[] = [];
+  lamps: any[] = [];
+  powers: any[] = [];
+  reactors: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -53,7 +59,6 @@ export class PoleCreateComponent implements OnInit {
       neighborhood: ['', Validators.required],
       city: ['', Validators.required],
       type_id: ['', Validators.required],
-      height: ['', Validators.required],
       remote_management_relay: [''],
       paving_id: ['', Validators.required],
       position_id: ['', Validators.required],
@@ -62,6 +67,11 @@ export class PoleCreateComponent implements OnInit {
       transformer_id: ['', Validators.required],
       access_id: ['', Validators.required],
       luminaire_quantity: ['0', Validators.required],
+      characteristic_id: ['', Validators.required],
+      arm_id: ['', Validators.required],
+      lamp_id: ['', Validators.required],
+      power_id: ['', Validators.required],
+      reactor_id: ['', Validators.required],      
     });
     this.loadOptions();
     this.getLocation();
@@ -97,6 +107,20 @@ export class PoleCreateComponent implements OnInit {
     }
   }
 
+  confirmManualQrCode() {
+    const value = this.manualQrCode.value?.trim();
+
+    if (!value) {
+      this.toast.error('Digite um código válido');
+      return;
+    }
+
+    this.form.patchValue({ qrcode: value });
+    this.qrResult = value;
+    this.qrcodeDetected = true;
+    this.checkPoste(value);
+  }
+
   loadOptions(): void {
     this.auxiliaryService.getAll().subscribe({
       next: (res) => {
@@ -107,6 +131,11 @@ export class PoleCreateComponent implements OnInit {
         this.connectionTypes = res.connectionTypes;
         this.transformers = res.transformers;
         this.accesses = res.accesses;
+        this.characteristics = res.characteristics;
+        this.arms = res.arms;
+        this.lamps = res.lamps;
+        this.powers = res.powers;
+        this.reactors = res.reactors;
       },
       error: () => {}
     });

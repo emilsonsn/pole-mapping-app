@@ -1,19 +1,29 @@
 <div *ngIf="!qrcodeDetected" class="text-center">
   <button class="btn btn-primary" (click)="scanQRCode()">Escanear QR Code</button>
 
-  <p class="mt-2">Aponte para o QR Code do poste</p>
+  <p class="mt-2">Ou digite o QR Code do poste</p>
+
+  <mat-form-field appearance="outline" class="w-100 mt-2">
+    <mat-label>Digite o QR Code</mat-label>
+    <input matInput type="text" [formControl]="manualQrCode" />
+  </mat-form-field>
+
+  <div class="mt-2">
+    <button class="btn btn-success" (click)="confirmManualQrCode()">Confirmar</button>
+  </div>
 
   <p *ngIf="qrResult" class="alert alert-success text-center">
     QR Code lido: {{ qrResult }}
   </p>
 </div>
 
+
 <form [formGroup]="form" (ngSubmit)="submit()" *ngIf="qrcodeDetected">
   <div class="form-grid row">
     <div class="{{ field.class }}" *ngFor="let field of locationFields">
       <mat-form-field appearance="outline" class="w-100">
         <mat-label>{{ field.label }}</mat-label>
-        <input matInput type="text" [formControlName]="field.value" [readonly]="true" />
+        <input matInput type="text" [formControlName]="field.value"/>
       </mat-form-field>
     </div>
 
@@ -23,13 +33,6 @@
         <mat-select formControlName="type_id">
           <mat-option *ngFor="let item of types" [value]="item.id">{{ item.name }}</mat-option>
         </mat-select>
-      </mat-form-field>
-    </div>
-
-    <div class="form-item">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Altura</mat-label>
-        <input matInput type="number" formControlName="height" />
       </mat-form-field>
     </div>
 
@@ -53,6 +56,52 @@
 
     <div class="form-item">
       <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Características</mat-label>
+        <mat-select formControlName="characteristic_id">
+          <mat-option *ngFor="let item of characteristics" [value]="item.id">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-item">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Tipo de Braço</mat-label>
+        <mat-select formControlName="arm_id">
+          <mat-option *ngFor="let item of arms" [value]="item.id">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-item">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Tipo de Lâmpada</mat-label>
+        <mat-select formControlName="lamp_id">
+          <mat-option *ngFor="let item of lamps" [value]="item.id">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-item">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Potência</mat-label>
+        <mat-select formControlName="power_id">
+          <mat-option *ngFor="let item of powers" [value]="item.id">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-item">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Reator</mat-label>
+        <mat-select formControlName="reactor_id">
+          <mat-option *ngFor="let item of reactors" [value]="item.id">{{ item.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+
+    <div class="form-item">
+      <mat-form-field appearance="outline" class="w-100">
         <mat-label>Tipo de Rede</mat-label>
         <mat-select formControlName="network_type_id">
           <mat-option *ngFor="let item of networkTypes" [value]="item.id">{{ item.name }}</mat-option>
@@ -62,7 +111,7 @@
 
     <div class="form-item">
       <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Tipo de Conexão</mat-label>
+        <mat-label>Tipo de Ligação</mat-label>
         <mat-select formControlName="connection_type_id">
           <mat-option *ngFor="let item of connectionTypes" [value]="item.id">{{ item.name }}</mat-option>
         </mat-select>
