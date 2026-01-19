@@ -1,8 +1,6 @@
 import {Component, ElementRef, Renderer2} from '@angular/core';
 import {filter, Subscription} from "rxjs";
 import {User} from "@models/user";
-import {UserService} from "@services/user.service";
-import {SessionService} from '@store/session.service';
 import {SessionQuery} from '@store/session.query';
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import { IMenuItem } from '@models/ItemsMenu';
@@ -42,14 +40,14 @@ export class LayoutPrivateComponent {
       active: true
     },
     {
-      label: 'Histórico',
-      icon: 'fa-brands fa-product-hunt',
+      label: 'Histórico de manutenções',
+      icon: 'fa-solid fa-list',
       route: '/painel/maintenance/history',
       active: true
     },
     {
       label: 'Album',
-      icon: 'fa-solid fa-gears',
+      icon: 'fa-solid fa-images',
       route: '/painel/maintenance/album'
     },
   ]
@@ -58,10 +56,13 @@ export class LayoutPrivateComponent {
   private resizeSubscription: Subscription;
   user: User;
 
+  isHome = false;
+
   constructor(
     private readonly _activatedRoute: ActivatedRoute,
     private readonly _sidebarService: SidebarService,
-    private readonly _sessionQuery: SessionQuery
+    private readonly _sessionQuery: SessionQuery,
+    private readonly _router: Router
   ) {
   }
 
@@ -79,12 +80,22 @@ export class LayoutPrivateComponent {
     this._activatedRoute.queryParams.subscribe(params => {
       this.titleProcess = params['title_process'];
     });
+
+    this._router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        this.isHome = event.urlAfterRedirects === '/painel/home';
+      });
   }
 
   ngOnDestroy(): void {
     if (this.resizeSubscription) {
       this.resizeSubscription.unsubscribe();
     }
+  }
+
+  goHome(): void {
+    this._router.navigate(['/painel/home']);
   }
 
 }

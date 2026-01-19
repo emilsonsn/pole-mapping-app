@@ -20,10 +20,21 @@ export class HomeComponent implements OnInit {
     date_to: dayjs().format('YYYY-MM-DD')
   };
 
+  shortcuts = [
+    { label: 'Cadastrar Poste', icon: 'fa-solid fa-file-lines', route: '/painel/register' },
+    { label: 'Manutenções', icon: 'fa-solid fa-user', route: '/painel/maintenance' },
+    { label: 'Histórico de manutenções', icon: 'fa-solid fa-list', route: '/painel/maintenance/history' },
+    { label: 'Álbum', icon: 'fa-solid fa-images', route: '/painel/maintenance/album' }
+  ];
+
   constructor(private readonly routeService: Router, private readonly dashboard: DashboardService) {}
 
   ngOnInit() {
     this.loadCards();
+  }
+
+  go(route: string) {
+    this.routeService.navigate([route]);
   }
 
   loadCards() {

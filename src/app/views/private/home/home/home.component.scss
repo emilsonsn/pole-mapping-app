@@ -1,0 +1,8 @@
+.shortcut-card {
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.shortcut-card:hover {
+  transform: translateY(-4px);
+}

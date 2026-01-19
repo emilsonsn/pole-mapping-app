@@ -5,6 +5,11 @@ import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 import { ToastrService } from 'ngx-toastr';
 import { AuxiliaryService } from '@services/auxiliary.service';
 import { Geolocation } from '@capacitor/geolocation';
+import { Camera, CameraSource, CameraResultType } from '@capacitor/camera';
+import { Capacitor } from '@capacitor/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-pole-create',
@@ -20,6 +25,9 @@ export class PoleCreateComponent implements OnInit {
   qrcodeDetected = false;
   poleExist = false;
   manualQrCode = this.fb.control('');
+
+  relayImagePreview: string | null = null;
+  relayPhotoConfirmed = false;
 
   locationFields = [
     { value: 'latitude', label: 'Latitude', class: 'form-item'},
@@ -48,10 +56,13 @@ export class PoleCreateComponent implements OnInit {
     private toast: ToastrService,
     private auxiliaryService: AuxiliaryService,
     private poleService: PoleService,
+    private readonly routeService: Router,
+    private readonly route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
+      id: [''],
       qrcode: ['', Validators.required],
       latitude: ['', Validators.required],
       longitude: ['', Validators.required],
@@ -73,9 +84,43 @@ export class PoleCreateComponent implements OnInit {
       power_id: ['', Validators.required],
       reactor_id: ['', Validators.required],      
     });
+
     this.loadOptions();
     this.getLocation();
+
+    const qrcode = localStorage.getItem('AUTO_QRCODE_FROM_MAINTENANCE');
+
+    if (qrcode) {
+      this.manualQrCode.setValue(qrcode);
+      localStorage.removeItem('AUTO_QRCODE_FROM_MAINTENANCE');
+      this.confirmManualQrCode();
+    }
   }
+
+  loadPoleById(poleId: number) {
+    this.loading = true;
+
+    this.poleService.getById(poleId).subscribe({
+      next: (poste) => {
+        this.poleExist = true;
+        this.qrcodeDetected = true;
+        this.form.patchValue(poste);
+
+        if (poste.remote_management_relay_image) {
+          this.relayImagePreview = poste.remote_management_relay_image;
+          this.relayPhotoConfirmed = true;
+        }
+
+        this.loading = false;
+        this.toast.info('Edite os dados do poste conforme necessário.');
+      },
+      error: () => {
+        this.loading = false;
+        this.toast.error('Erro ao carregar poste para edição.');
+      }
+    });
+  }
+
 
   async getLocation() {
     try {
@@ -121,7 +166,60 @@ export class PoleCreateComponent implements OnInit {
     this.checkPoste(value);
   }
 
+  async takeRelayPhoto() {
+    try {
+      if (!Capacitor.isNativePlatform()) {
+        throw new Error('camera_unavailable_on_web');
+      }
+
+      await Camera.requestPermissions({ permissions: ['camera'] });
+
+      const photo = await Camera.getPhoto({
+        source: CameraSource.Camera,
+        resultType: CameraResultType.Base64,
+        quality: 80,
+        allowEditing: false,
+        saveToGallery: false
+      });
+
+      this.relayImagePreview = `data:image/jpeg;base64,${photo.base64String}`;
+      this.relayPhotoConfirmed = false;
+
+      const base64 = photo.base64String!;
+      const byteString = atob(base64);
+      const arrayBuffer = new ArrayBuffer(byteString.length);
+      const uint8Array = new Uint8Array(arrayBuffer);
+
+      for (let i = 0; i < byteString.length; i++) {
+        uint8Array[i] = byteString.charCodeAt(i);
+      }
+
+      const blob = new Blob([uint8Array], { type: 'image/jpeg' });
+      const file = new File([blob], `rele_${Date.now()}.jpg`, { type: 'image/jpeg' });
+
+      this.form.patchValue({ remote_management_relay: file });
+    } catch (e) {
+      this.toast.error('Não foi possível abrir a câmera.');
+    }
+  }
+
+  confirmRelayPhoto() {
+    if (this.relayImagePreview) {
+      this.relayPhotoConfirmed = true;
+      this.toast.success('Foto do relê confirmada.');
+    }
+  }
+
+  discardRelayPhoto() {
+    this.relayImagePreview = null;
+    this.relayPhotoConfirmed = false;
+    this.form.patchValue({ remote_management_relay: null });
+  }
+
+
   loadOptions(): void {
+    this.loading = true;
+
     this.auxiliaryService.getAll().subscribe({
       next: (res) => {
         this.types = res.types;
@@ -137,9 +235,15 @@ export class PoleCreateComponent implements OnInit {
         this.powers = res.powers;
         this.reactors = res.reactors;
       },
-      error: () => {}
+      error: () => {
+        this.loading = false;
+      },
+      complete: () => {
+        this.loading = false;
+      }
     });
   }
+
 
   async scanQRCode() {
     const { barcodes } = await BarcodeScanner.scan();
@@ -170,8 +274,11 @@ export class PoleCreateComponent implements OnInit {
           this.toast.success('Informações encontradas com sucesso!')
           this.poleExist = true;
           this.form.patchValue(poste);
-          this.form.disable();
           this.loading = false;
+          if (poste.remote_management_relay_image) {
+            this.relayImagePreview = poste.remote_management_relay_image;
+            this.relayPhotoConfirmed = true;
+          }
         }else{
           this.poleExist = false;
           this.loading = false;
@@ -191,16 +298,55 @@ export class PoleCreateComponent implements OnInit {
 
     this.loading = true;
 
-    this.poleService.create(this.form.getRawValue()).subscribe({
+    const formData = new FormData();
+
+    Object.entries(this.form.getRawValue()).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        formData.append(key, value as any);
+      }
+    });    
+
+    const id = this.form.get('id').value;
+
+    if(id){
+      this.update(id, formData);
+    }else{
+      this.create(formData);
+    }
+  }
+
+  public create(formData){
+    this.poleService.create(formData).subscribe({
       next: (res) => {
         this.toast.success('Poste cadastrado com sucesso!');
         this.form.reset();
         this.loading = false;
+        this.routeService.navigate(['/painel/home']);
       },
       error: (error) => {
         this.toast.error(error.message);
         this.loading = false;
       }
     });
+  }
+
+  public update(id, formData){
+    this.poleService.update(id, formData).subscribe({
+      next: (res) => {
+        this.toast.success('Poste atualizado com sucesso!');
+        this.form.reset();
+        this.loading = false;
+        this.routeService.navigate(['/painel/home']);
+      },
+      error: (error) => {
+        this.toast.error(error.message);
+        this.loading = false;
+      }
+    });
+  }  
+
+  public reset(){
+    this.qrcodeDetected = false;
+    this.poleExist = false;
   }
 }

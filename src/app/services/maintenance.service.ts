@@ -13,6 +13,10 @@ export class MaintenanceService {
     return this.http.post(this.baseUrl, data);
   }
 
+  update(data: FormData, id): Observable<any> {
+    return this.http.post(this.baseUrl + '/' + id + '?_method=PATCH', data);
+  }
+
   all() {
     return this.http.get<any[]>(this.baseUrl);
   }

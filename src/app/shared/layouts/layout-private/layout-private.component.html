@@ -2,6 +2,15 @@
   <app-sidebar-private
     [menuItem]="menuItem">
   </app-sidebar-private>
+    <button
+      class="fab-home"
+      (click)="goHome()"
+        *ngIf="!isHome" 
+    >
+    <i class="fa-solid fa-house"></i>
+  </button>
+
+
   <section id="template">
     <app-header-private
       [titleProcess]="titleProcess"

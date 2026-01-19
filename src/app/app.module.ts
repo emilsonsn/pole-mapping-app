@@ -8,6 +8,10 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserstateInterceptor } from './interceptors/browserstate.interceptor';
 import { AuthInterceptorService } from '@services/auth-interceptor.service';
+import { LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
+registerLocaleData(localePt);
 
 @NgModule({
   declarations: [
@@ -24,6 +28,7 @@ import { AuthInterceptorService } from '@services/auth-interceptor.service';
   ],
   providers: [
     provideClientHydration(),
+    { provide: LOCALE_ID, useValue: 'pt-BR' },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,

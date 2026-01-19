@@ -1,4 +1,16 @@
 <div id="componentHeaderTemplate" class="mt-3 row">
+
+  <div class="row mt-4">
+    <div class="col-md-3 mb-3" *ngFor="let shortcut of shortcuts">
+      <div class="card shadow shortcut-card" (click)="go(shortcut.route)">
+        <div class="card-body text-center">
+          <i [class]="shortcut.icon + ' fa-2x mb-2'"></i>
+          <h6 class="mb-0">{{ shortcut.label }}</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="col-md-4 mb-3">
     <div class="card shadow">
       <div class="card-body">
