@@ -4,6 +4,10 @@ import {hasSessionGuard} from "@app/guards/has-session.guard";
 
 const routes: Routes = [
   {
+    path: '',
+    loadChildren: () => import('./views/session/session.module').then(m => m.SessionModule)
+  },
+  {
     path: 'public',
     loadChildren: () => import('./views/public/public.module').then(m => m.PublicModule)
   },

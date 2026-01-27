@@ -22,6 +22,7 @@ export class MaintenanceComponent {
   loading = false;
   pendingMaintenance: any = null;
   isFinishing = false;
+  manualQrCode = this.fb.control('');
 
   constructor(
     private fb: FormBuilder,
@@ -93,6 +94,52 @@ export class MaintenanceComponent {
       this.toast.error('Erro ao escanear QR Code.');
       console.error(error);
     }
+  }
+
+  confirmManualQrCode() {
+    const value = this.manualQrCode.value?.trim();
+
+    if (!value) {
+      this.toast.error('Digite um QR Code válido.');
+      return;
+    }
+
+    this.qrcode = value;
+    this.loading = true;
+
+    this.poleService.getByQrCode(value).subscribe({
+      next: (pole) => {
+        if (pole?.id) {
+          this.toast.success('Poste encontrado!');
+          this.form.patchValue({
+            pole_id: pole.id,
+            latitude: pole.latitude,
+            longitude: pole.longitude,
+            address: pole.address,
+            neighborhood: pole.neighborhood,
+            city: pole.city,
+            id: pole.maintenances.length ? pole.maintenances[0]?.id : null
+          });
+
+          if (pole.maintenances?.length > 0) {
+            this.pendingMaintenance = pole.maintenances[0];
+            this.isFinishing = true;
+            this.toast.info('Este poste possui manutenção pendente. Finalize abaixo.');
+          } else {
+            this.pendingMaintenance = null;
+            this.isFinishing = false;
+          }
+        } else {
+          this.toast.error('Poste não encontrado!');
+        }
+
+        this.loading = false;
+      },
+      error: () => {
+        this.toast.error('Erro ao buscar poste.');
+        this.loading = false;
+      }
+    });
   }
 
 

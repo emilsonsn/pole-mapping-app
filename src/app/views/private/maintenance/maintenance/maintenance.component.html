@@ -5,8 +5,24 @@
     <button mat-raised-button color="primary" (click)="scanQRCode()">
       Escanear QR Code do Poste
     </button>
-    <p class="mt-2">Escaneie o QR Code para registrar a manutenção.</p>
+
+    <p class="mt-3">Ou digite o QR Code do poste</p>
+
+    <mat-form-field appearance="outline" class="w-100 mt-2">
+      <mat-label>QR Code</mat-label>
+      <input matInput [formControl]="manualQrCode">
+    </mat-form-field>
+
+    <button
+      mat-raised-button
+      color="accent"
+      class="mt-2"
+      (click)="confirmManualQrCode()"
+    >
+      Confirmar QR Code
+    </button>
   </div>
+
 
   <form *ngIf="form.get('pole_id')?.value" [formGroup]="form" (ngSubmit)="submit()">
       <!-- Geolocalização -->
