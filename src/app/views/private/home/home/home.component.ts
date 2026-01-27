@@ -11,9 +11,10 @@ import { finalize } from 'rxjs';
 })
 export class HomeComponent implements OnInit {
   loading = false;
-  salesToday = 0;
-  leadsToday = 0;
-  monthlyRevenue = 0;
+  maintenancesToday = 0;
+  maintenancesMonth = 0;
+  polesToday = 0;
+  polesMonth = 0;
 
   filters = {
     date_from: dayjs().format('YYYY-MM-DD'),
@@ -24,7 +25,6 @@ export class HomeComponent implements OnInit {
     { label: 'Cadastrar Poste', icon: 'fa-solid fa-file-lines', route: '/painel/register' },
     { label: 'Manutenções', icon: 'fa-solid fa-user', route: '/painel/maintenance' },
     { label: 'Histórico de manutenções', icon: 'fa-solid fa-list', route: '/painel/maintenance/history' },
-    { label: 'Álbum', icon: 'fa-solid fa-images', route: '/painel/maintenance/album' }
   ];
 
   constructor(private readonly routeService: Router, private readonly dashboard: DashboardService) {}
@@ -43,9 +43,10 @@ export class HomeComponent implements OnInit {
       .pipe(finalize(() => this.loading = false))
       .subscribe({
         next: r => {
-          this.leadsToday = r.leadsToday ?? 0;
-          this.monthlyRevenue = r.monthlyRevenue ?? 0;
-          this.salesToday = r.salesToday ?? 0;
+          this.maintenancesToday = r.maintenancesToday ?? 0;
+          this.maintenancesMonth = r.maintenancesMonth ?? 0;
+          this.polesToday = r.polesToday ?? 0;
+          this.polesMonth = r.polesMonth ?? 0;
         },
         error: () => {}
       });

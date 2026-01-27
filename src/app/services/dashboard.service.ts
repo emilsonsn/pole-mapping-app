@@ -4,9 +4,10 @@ import { environment } from '@env/environment';
 import { Observable } from 'rxjs';
 
 export interface DashboardCards {
-  leadsToday: number;
-  monthlyRevenue: number;
-  salesToday: number;
+  maintenancesToday: number;
+  maintenancesMonth: number;
+  polesToday: number;
+  polesMonth: number;
 }
 
 @Injectable({ providedIn: 'root' })

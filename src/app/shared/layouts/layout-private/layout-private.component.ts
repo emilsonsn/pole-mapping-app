@@ -44,12 +44,7 @@ export class LayoutPrivateComponent {
       icon: 'fa-solid fa-list',
       route: '/painel/maintenance/history',
       active: true
-    },
-    {
-      label: 'Album',
-      icon: 'fa-solid fa-images',
-      route: '/painel/maintenance/album'
-    },
+    }
   ]
 
   protected isMobile: boolean = window.innerWidth >= 1000;

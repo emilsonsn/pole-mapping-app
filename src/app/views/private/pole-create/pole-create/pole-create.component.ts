@@ -26,6 +26,9 @@ export class PoleCreateComponent implements OnInit {
   poleExist = false;
   manualQrCode = this.fb.control('');
 
+  poleImagePreview: string | null = null;
+  polePhotoConfirmed = false;
+
   relayImagePreview: string | null = null;
   relayPhotoConfirmed = false;
 
@@ -71,6 +74,8 @@ export class PoleCreateComponent implements OnInit {
       city: ['', Validators.required],
       type_id: ['', Validators.required],
       remote_management_relay: [''],
+      pole_relay: [''],
+      pole_image: [''],      
       paving_id: ['', Validators.required],
       position_id: ['', Validators.required],
       network_type_id: ['', Validators.required],
@@ -110,6 +115,11 @@ export class PoleCreateComponent implements OnInit {
           this.relayImagePreview = poste.remote_management_relay_image;
           this.relayPhotoConfirmed = true;
         }
+
+        if (poste.pole_image_url) {          
+          this.poleImagePreview = poste.pole_image_url;
+          this.polePhotoConfirmed = true;
+        }        
 
         this.loading = false;
         this.toast.info('Edite os dados do poste conforme necessário.');
@@ -216,6 +226,55 @@ export class PoleCreateComponent implements OnInit {
     this.form.patchValue({ remote_management_relay: null });
   }
 
+  async takePolePhoto() {
+    try {
+      if (!Capacitor.isNativePlatform()) {
+        throw new Error();
+      }
+
+      await Camera.requestPermissions({ permissions: ['camera'] });
+
+      const photo = await Camera.getPhoto({
+        source: CameraSource.Camera,
+        resultType: CameraResultType.Base64,
+        quality: 80,
+        allowEditing: false,
+        saveToGallery: false
+      });
+
+      this.poleImagePreview = `data:image/jpeg;base64,${photo.base64String}`;
+      this.polePhotoConfirmed = false;
+
+      const byteString = atob(photo.base64String!);
+      const arrayBuffer = new ArrayBuffer(byteString.length);
+      const uint8Array = new Uint8Array(arrayBuffer);
+
+      for (let i = 0; i < byteString.length; i++) {
+        uint8Array[i] = byteString.charCodeAt(i);
+      }
+
+      const blob = new Blob([uint8Array], { type: 'image/jpeg' });
+      const file = new File([blob], `poste_${Date.now()}.jpg`, { type: 'image/jpeg' });
+
+      this.form.patchValue({ pole_image: file });
+    } catch {
+      this.toast.error('Não foi possível abrir a câmera.');
+    }
+  }
+
+  confirmPolePhoto() {
+    if (this.poleImagePreview) {
+      this.polePhotoConfirmed = true;
+      this.toast.success('Foto do poste confirmada.');
+    }
+  }
+
+  discardPolePhoto() {
+    this.poleImagePreview = null;
+    this.polePhotoConfirmed = false;
+    this.form.patchValue({ pole_image: null });
+  }
+
 
   loadOptions(): void {
     this.loading = true;
@@ -275,9 +334,15 @@ export class PoleCreateComponent implements OnInit {
           this.poleExist = true;
           this.form.patchValue(poste);
           this.loading = false;
+
           if (poste.remote_management_relay_image) {
             this.relayImagePreview = poste.remote_management_relay_image;
             this.relayPhotoConfirmed = true;
+          }
+
+          if (poste.pole_image_url) {
+            this.poleImagePreview = poste.pole_image_url;
+            this.polePhotoConfirmed = true;
           }
         }else{
           this.poleExist = false;

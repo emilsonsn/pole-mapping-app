@@ -29,7 +29,7 @@
 
     <div class="form-item">
       <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Tipo</mat-label>
+        <mat-label>Modelo de Poste</mat-label>
         <mat-select formControlName="type_id">
           <mat-option *ngFor="let item of types" [value]="item.id">{{ item.name }}</mat-option>
         </mat-select>
@@ -56,7 +56,7 @@
 
     <div class="form-item">
       <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Características</mat-label>
+        <mat-label>Diametro do braço/suporte</mat-label>
         <mat-select formControlName="characteristic_id">
           <mat-option *ngFor="let item of characteristics" [value]="item.id">{{ item.name }}</mat-option>
         </mat-select>
@@ -143,6 +143,41 @@
           <mat-option *ngFor="let item of [1, 2, 3, 4, 5]" [value]="item">{{ item }}</mat-option>
         </mat-select>
       </mat-form-field>
+    </div>
+
+    <div class="col-md-12">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Tipo de Relê</mat-label>
+        <input matInput type="text" formControlName="pole_relay">
+      </mat-form-field>
+    </div>
+
+    <div class="col-md-12 mb-2">
+      <button
+        mat-raised-button
+        color="accent"
+        type="button"
+        (click)="takePolePhoto()"
+      >
+        Fotografar Poste
+      </button>
+    </div>
+
+    <div *ngIf="poleImagePreview" class="text-center mt-3">
+      <img
+        [src]="poleImagePreview"
+        class="img-thumbnail"
+        style="max-width:300px"
+      />
+
+      <div class="mt-2">
+        <button mat-button color="primary" (click)="confirmPolePhoto()" [disabled]="polePhotoConfirmed">
+          Confirmar Foto
+        </button>
+        <button mat-button color="warn" (click)="discardPolePhoto()">
+          Descartar Foto
+        </button>
+      </div>
     </div>
 
     <div class="col-md-12">

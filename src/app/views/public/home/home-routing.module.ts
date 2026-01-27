@@ -1,11 +1,11 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {HomeComponent} from "@app/views/public/home/home/home.component";
+import { TicketCreateComponent } from './home/ticket-create.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: HomeComponent
+    component: TicketCreateComponent
   }
 ];
 
