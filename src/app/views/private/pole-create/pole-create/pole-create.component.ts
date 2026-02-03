@@ -38,6 +38,7 @@ export class PoleCreateComponent implements OnInit {
     { value: 'city', label: 'Cidade', class: 'col-md-12'},
     { value: 'neighborhood', label: 'Bairro', class: 'col-md-12'},
     { value: 'address', label: 'Endereço', class: 'col-md-12'},
+    { value: 'number', label: 'Número', class: 'col-md-12'},
   ];
 
   // Campos dos selects
@@ -53,6 +54,7 @@ export class PoleCreateComponent implements OnInit {
   lamps: any[] = [];
   powers: any[] = [];
   reactors: any[] = [];
+  relays: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -70,11 +72,12 @@ export class PoleCreateComponent implements OnInit {
       latitude: ['', Validators.required],
       longitude: ['', Validators.required],
       address: ['', Validators.required],
+      number: [''],
       neighborhood: ['', Validators.required],
       city: ['', Validators.required],
       type_id: ['', Validators.required],
       remote_management_relay: [''],
-      pole_relay: [''],
+      relay_id: [''],
       pole_image: [''],      
       paving_id: ['', Validators.required],
       position_id: ['', Validators.required],
@@ -293,6 +296,7 @@ export class PoleCreateComponent implements OnInit {
         this.lamps = res.lamps;
         this.powers = res.powers;
         this.reactors = res.reactors;
+        this.relays = res.relays;
       },
       error: () => {
         this.loading = false;

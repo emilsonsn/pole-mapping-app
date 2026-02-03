@@ -12,6 +12,16 @@ export class MaintenanceHistoryComponent {
   searchTerm = '';
   selected: any = null;
 
+  expandedImage: string | null = null;
+
+  openImage(path: string) {
+    this.expandedImage = path;
+  }
+
+  closeImage() {
+    this.expandedImage = null;
+  }
+
   onRowClick(item: any) {
     this.selected = item;
   }

@@ -23,6 +23,7 @@ export class AuxiliaryService {
       lamps: this.http.get<any[]>(this.baseUrl + '/lamps'),
       powers: this.http.get<any[]>(this.baseUrl + '/powers'),
       reactors: this.http.get<any[]>(this.baseUrl + '/reactors'),
+      relays: this.http.get<any[]>(this.baseUrl + '/relays'),
     });
   }
 }
