@@ -21,10 +21,12 @@ import { TablesModule } from '@shared/tables/tables.module';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { ToastrModule } from 'ngx-toastr';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { PolesComponent } from './poles/poles.component';
 
 @NgModule({
   declarations: [
-    PoleCreateComponent
+    PoleCreateComponent,
+    PolesComponent
   ],
   imports: [
     CommonModule,

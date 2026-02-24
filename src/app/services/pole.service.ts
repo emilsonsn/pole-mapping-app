@@ -8,6 +8,10 @@ export class PoleService {
 
   constructor(private http: HttpClient) {}
 
+  getAll() {
+    return this.http.get<any[]>(`${this.baseUrl}`);
+  }
+
   getByQrCode(qrcode: string) {
     return this.http.get<any>(`${this.baseUrl}?qrcode=${qrcode}`);
   }

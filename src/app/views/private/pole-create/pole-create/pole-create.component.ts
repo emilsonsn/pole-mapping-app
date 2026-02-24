@@ -307,12 +307,18 @@ export class PoleCreateComponent implements OnInit {
     });
   }
 
-
   async scanQRCode() {
     const { barcodes } = await BarcodeScanner.scan();
 
     if (barcodes.length > 0) {
-      const value = barcodes[0].rawValue;
+      let value = barcodes[0].rawValue?.trim();
+
+      if (!value) return;
+
+      if (value.includes('http://') || value.includes('https://')) {
+        value = value.split('/').filter(Boolean).pop() || value;
+      }
+
       this.qrResult = value;
       this.qrcodeDetected = true;
       this.form.patchValue({ qrcode: value });

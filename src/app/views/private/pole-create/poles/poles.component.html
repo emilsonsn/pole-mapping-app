@@ -1,0 +1,140 @@
+<div class="container mt-4">
+
+  <h3 class="fw-bold mb-4">Histórico de Postes</h3>
+
+  <!-- LISTAGEM -->
+  <ng-container *ngIf="!selected">
+
+    <div *ngIf="loading" class="text-center">
+      Carregando...
+    </div>
+
+    <div *ngFor="let pole of poles"
+         class="card shadow-sm mb-3 p-3"
+         style="cursor:pointer"
+         (click)="selectPole(pole)">
+
+      <div class="d-flex justify-content-between align-items-center">
+
+        <div>
+          <div class="fw-bold">
+            Poste #{{ pole.id }}
+          </div>
+          <div class="text-muted small">
+            {{ pole.address }} - {{ pole.city }}
+          </div>
+        </div>
+
+        <div>
+          <span *ngIf="pole.maintenances?.length > 0"
+                class="badge bg-warning text-dark">
+            Manutenção Pendente
+          </span>
+        </div>
+
+      </div>
+
+      <div class="mt-2 small text-muted">
+        QR: {{ pole.qrcode }}
+      </div>
+
+    </div>
+
+  </ng-container>
+
+
+  <!-- DETALHES -->
+  <div *ngIf="selected" class="card shadow p-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 class="fw-bold">Ficha Técnica do Poste</h4>
+      <button class="btn btn-sm btn-outline-primary"
+              (click)="closeDetails()">
+        Voltar
+      </button>
+    </div>
+
+    <div class="row">
+
+      <!-- INFORMAÇÕES BÁSICAS -->
+      <hr>
+      <div class="col-md-6">
+        <h4 class="fw-bold">Informações Gerais</h4>
+
+        <p><strong>ID:</strong> {{ selected.id }}</p>
+        <p><strong>QR Code:</strong> {{ selected.qrcode }}</p>
+        <p><strong>Endereço:</strong> {{ selected.address }}</p>
+        <p><strong>Bairro:</strong> {{ selected.neighborhood }}</p>
+        <p><strong>Cidade:</strong> {{ selected.city }}</p>
+        <p><strong>Latitude:</strong> {{ selected.latitude }}</p>
+        <p><strong>Longitude:</strong> {{ selected.longitude }}</p>
+
+      </div>
+
+      <!-- ESPECIFICAÇÕES TÉCNICAS -->
+      <hr>
+      <div class="col-md-6">
+        <h4 class="fw-bold">Especificações Técnicas</h4>
+
+        <p><strong>Modelo:</strong> {{ selected.type?.name }}</p>
+        <p><strong>Pavimentação:</strong> {{ selected.paving?.name }}</p>
+        <p><strong>Posição:</strong> {{ selected.position?.name }}</p>
+        <p><strong>Diâmetro:</strong> {{ selected.characteristic?.name }}</p>
+        <p><strong>Braço:</strong> {{ selected.arm?.name }}</p>
+        <p><strong>Lâmpada:</strong> {{ selected.lamp?.name }}</p>
+        <p><strong>Potência:</strong> {{ selected.power?.name }}</p>
+        <p><strong>Reator:</strong> {{ selected.reactor?.name }}</p>
+        <p><strong>Tipo de Rede:</strong> {{ selected.networkType?.name }}</p>
+        <p><strong>Tipo de Ligação:</strong> {{ selected.connectionType?.name }}</p>
+        <p><strong>Transformador:</strong> {{ selected.transformer?.name }}</p>
+        <p><strong>Acesso:</strong> {{ selected.access?.name }}</p>
+        <p><strong>Qtd. Iluminação:</strong> {{ selected.luminaire_quantity }}</p>
+        <p><strong>Relê:</strong> {{ selected.relay?.name }}</p>
+
+      </div>
+
+    </div>
+
+
+    <!-- IMAGENS -->
+    <div class="row mt-4">
+
+      <div class="col-md-6 text-center">
+        <h4 class="fw-bold">Imagem do Poste</h4>
+        <img *ngIf="selected.pole_image_url"
+             [src]="selected.pole_image_url"
+             class="img-fluid rounded border shadow-sm"
+             style="max-height:300px; cursor:pointer"
+             (click)="openImage(selected.pole_image_url)">
+      </div>
+
+      <div class="col-md-6 text-center">
+        <h4 class="fw-bold">Imagem do Relê</h4>
+        <img *ngIf="selected.remote_management_relay_image"
+             [src]="selected.remote_management_relay_image"
+             class="img-fluid rounded border shadow-sm"
+             style="max-height:300px; cursor:pointer"
+             (click)="openImage(selected.remote_management_relay_image)">
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- MODAL IMAGEM -->
+  <div class="modal fade show"
+       tabindex="-1"
+       *ngIf="expandedImage"
+       style="display:block; background: rgba(0,0,0,.85)"
+       (click)="closeImage()">
+
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content bg-transparent border-0 text-center">
+        <img [src]="expandedImage"
+             class="img-fluid rounded shadow-lg">
+      </div>
+    </div>
+
+  </div>
+</div>

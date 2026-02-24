@@ -53,7 +53,14 @@ export class MaintenanceComponent {
       const { barcodes } = await BarcodeScanner.scan();
       if (barcodes.length === 0) return;
 
-      const qrcode = barcodes[0].rawValue;
+      let qrcode = barcodes[0].rawValue?.trim();
+
+      if (!qrcode) return;
+
+      if (qrcode.includes('http://') || qrcode.includes('https://')) {
+        qrcode = qrcode.split('/').filter(Boolean).pop() || qrcode;
+      }
+
       this.qrcode = qrcode;
 
       this.loading = true;
