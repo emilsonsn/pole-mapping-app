@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
     { label: 'Cadastrar Poste', icon: 'fa-solid fa-file-lines', route: '/painel/register' },
     { label: 'Manutenções', icon: 'fa-solid fa-user', route: '/painel/maintenance' },
     { label: 'Histórico de manutenções', icon: 'fa-solid fa-list', route: '/painel/maintenance/history' },
-    { label: 'Postes', icon: 'fa-solid fa-list', route: '/painel/register/list' },
+    { label: 'Histórico de postes cadastrados', icon: 'fa-solid fa-list', route: '/painel/register/list' },
   ];
 
   constructor(private readonly routeService: Router, private readonly dashboard: DashboardService) {}
