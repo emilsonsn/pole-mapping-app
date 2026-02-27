@@ -21,7 +21,7 @@
             Poste #{{ pole.id }}
           </div>
           <div class="text-muted small">
-            {{ pole.address }} - {{ pole.city }}
+            {{ pole.address }} {{ pole.number }} - {{ pole.city }}
           </div>
         </div>
 
@@ -64,6 +64,7 @@
         <p><strong>ID:</strong> {{ selected.id }}</p>
         <p><strong>QR Code:</strong> {{ selected.qrcode }}</p>
         <p><strong>Endereço:</strong> {{ selected.address }}</p>
+        <p><strong>Número:</strong> {{ selected.number }}</p>
         <p><strong>Bairro:</strong> {{ selected.neighborhood }}</p>
         <p><strong>Cidade:</strong> {{ selected.city }}</p>
         <p><strong>Latitude:</strong> {{ selected.latitude }}</p>
@@ -84,8 +85,8 @@
         <p><strong>Lâmpada:</strong> {{ selected.lamp?.name }}</p>
         <p><strong>Potência:</strong> {{ selected.power?.name }}</p>
         <p><strong>Reator:</strong> {{ selected.reactor?.name }}</p>
-        <p><strong>Tipo de Rede:</strong> {{ selected.networkType?.name }}</p>
-        <p><strong>Tipo de Ligação:</strong> {{ selected.connectionType?.name }}</p>
+        <p><strong>Tipo de Rede:</strong> {{ selected.network_type?.name }}</p>
+        <p><strong>Tipo de Ligação:</strong> {{ selected.connection_type?.name }}</p>
         <p><strong>Transformador:</strong> {{ selected.transformer?.name }}</p>
         <p><strong>Acesso:</strong> {{ selected.access?.name }}</p>
         <p><strong>Qtd. Iluminação:</strong> {{ selected.luminaire_quantity }}</p>
