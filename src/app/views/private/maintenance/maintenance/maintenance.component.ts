@@ -40,7 +40,8 @@ export class MaintenanceComponent {
       neighborhood: ['', Validators.required],
       city: ['', Validators.required],
       photo: [null],
-      description: [''],
+      initial_description: [''],
+      final_description: [''],
       conclusion_photo: [null],
     });
   }
@@ -125,7 +126,9 @@ export class MaintenanceComponent {
             address: pole.address,
             neighborhood: pole.neighborhood,
             city: pole.city,
-            id: pole.maintenances.length ? pole.maintenances[0]?.id : null
+            id: pole.maintenances.length ? pole.maintenances[0]?.id : null,
+            initial_description: pole.maintenances.length ? pole.maintenances[0]?.initial_description : '',
+            final_description: pole.maintenances.length ? pole.maintenances[0]?.final_description : ''
           });
 
           if (pole.maintenances?.length > 0) {
@@ -259,7 +262,8 @@ export class MaintenanceComponent {
     formData.append('city', this.form.get('city')?.value);
     formData.append('photo', this.form.get('photo')?.value ?? '');
     formData.append('conclusion_photo', this.form.get('conclusion_photo')?.value ?? '');
-    formData.append('description', this.form.get('description')?.value ?? '');
+    formData.append('initial_description', this.form.get('initial_description')?.value ?? '');
+    formData.append('final_description', this.form.get('final_description')?.value ?? '');
     
     this.loading = true;
 

@@ -58,10 +58,17 @@
         </button>
       </div>
 
+      <div *ngIf="!isFinishing">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Descrição (inicial)</mat-label>
+          <textarea matInput formControlName="initial_description"></textarea>
+        </mat-form-field>
+      </div>
+
       <div *ngIf="isFinishing">
         <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Descrição da manutenção</mat-label>
-          <textarea matInput formControlName="description"></textarea>
+          <mat-label>Descrição da manutenção (final)</mat-label>
+          <textarea matInput formControlName="final_description"></textarea>
         </mat-form-field>
 
         <button mat-raised-button color="accent" (click)="takeConclusionPhoto()">
