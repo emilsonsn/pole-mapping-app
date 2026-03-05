@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+// pole-create.component.ts
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PoleService } from '@services/pole.service';
 import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 import { ToastrService } from 'ngx-toastr';
@@ -7,16 +8,14 @@ import { AuxiliaryService } from '@services/auxiliary.service';
 import { Geolocation } from '@capacitor/geolocation';
 import { Camera, CameraSource, CameraResultType } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
-import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-pole-create',
   templateUrl: './pole-create.component.html',
   styleUrls: ['./pole-create.component.scss']
 })
-
 export class PoleCreateComponent implements OnInit {
   form!: FormGroup;
   loading = false;
@@ -41,7 +40,6 @@ export class PoleCreateComponent implements OnInit {
     { value: 'number', label: 'Número', class: 'col-md-12'},
   ];
 
-  // Campos dos selects
   types: any[] = [];
   pavings: any[] = [];
   positions: any[] = [];
@@ -78,7 +76,7 @@ export class PoleCreateComponent implements OnInit {
       type_id: ['', Validators.required],
       remote_management_relay: [''],
       relay_id: [''],
-      pole_image: [''],      
+      pole_image: [''],
       paving_id: ['', Validators.required],
       position_id: ['', Validators.required],
       network_type_id: ['', Validators.required],
@@ -90,7 +88,7 @@ export class PoleCreateComponent implements OnInit {
       arm_id: ['', Validators.required],
       lamp_id: ['', Validators.required],
       power_id: ['', Validators.required],
-      reactor_id: ['', Validators.required],      
+      reactor_id: ['', Validators.required],
     });
 
     this.loadOptions();
@@ -119,10 +117,10 @@ export class PoleCreateComponent implements OnInit {
           this.relayPhotoConfirmed = true;
         }
 
-        if (poste.pole_image_url) {          
+        if (poste.pole_image_url) {
           this.poleImagePreview = poste.pole_image_url;
           this.polePhotoConfirmed = true;
-        }        
+        }
 
         this.loading = false;
         this.toast.info('Edite os dados do poste conforme necessário.');
@@ -134,12 +132,10 @@ export class PoleCreateComponent implements OnInit {
     });
   }
 
-
   async getLocation() {
     try {
       await Geolocation.requestPermissions();
 
-      const permission = await Geolocation.requestPermissions();
       const position = await Geolocation.getCurrentPosition({
         enableHighAccuracy: true,
       });
@@ -158,7 +154,6 @@ export class PoleCreateComponent implements OnInit {
         neighborhood: address.suburb || address.neighbourhood || '',
         city: address.city || address.town || address.village || '',
       });
-
     } catch (error) {
       console.error('Erro ao obter localização', error);
       this.toast.error('Não foi possível obter a localização via GPS.');
@@ -179,41 +174,53 @@ export class PoleCreateComponent implements OnInit {
     this.checkPoste(value);
   }
 
-  async takeRelayPhoto() {
+  private async captureAndSet(
+    field: 'remote_management_relay' | 'pole_image',
+    kind: 'relay' | 'pole'
+  ) {
     try {
       if (!Capacitor.isNativePlatform()) {
-        throw new Error('camera_unavailable_on_web');
+        this.toast.error('Abra o app Android (não o navegador) para tirar a foto.');
+        return;
       }
 
       await Camera.requestPermissions({ permissions: ['camera'] });
 
       const photo = await Camera.getPhoto({
         source: CameraSource.Camera,
-        resultType: CameraResultType.Base64,
-        quality: 80,
+        resultType: CameraResultType.Uri,
+        quality: 70,
         allowEditing: false,
         saveToGallery: false
       });
 
-      this.relayImagePreview = `data:image/jpeg;base64,${photo.base64String}`;
-      this.relayPhotoConfirmed = false;
+      const preview = photo.webPath ?? null;
 
-      const base64 = photo.base64String!;
-      const byteString = atob(base64);
-      const arrayBuffer = new ArrayBuffer(byteString.length);
-      const uint8Array = new Uint8Array(arrayBuffer);
-
-      for (let i = 0; i < byteString.length; i++) {
-        uint8Array[i] = byteString.charCodeAt(i);
+      if (kind === 'relay') {
+        this.relayImagePreview = preview;
+        this.relayPhotoConfirmed = false;
+      } else {
+        this.poleImagePreview = preview;
+        this.polePhotoConfirmed = false;
       }
 
-      const blob = new Blob([uint8Array], { type: 'image/jpeg' });
-      const file = new File([blob], `rele_${Date.now()}.jpg`, { type: 'image/jpeg' });
+      if (!photo.webPath) {
+        this.toast.error('Não foi possível obter a foto.');
+        return;
+      }
 
-      this.form.patchValue({ remote_management_relay: file });
+      const blob = await (await fetch(photo.webPath)).blob();
+      const filename = kind === 'relay' ? `rele_${Date.now()}.jpg` : `poste_${Date.now()}.jpg`;
+      const file = new File([blob], filename, { type: blob.type || 'image/jpeg' });
+
+      this.form.patchValue({ [field]: file });
     } catch (e) {
       this.toast.error('Não foi possível abrir a câmera.');
     }
+  }
+
+  async takeRelayPhoto() {
+    this.captureAndSet('remote_management_relay', 'relay');
   }
 
   confirmRelayPhoto() {
@@ -230,39 +237,7 @@ export class PoleCreateComponent implements OnInit {
   }
 
   async takePolePhoto() {
-    try {
-      if (!Capacitor.isNativePlatform()) {
-        throw new Error();
-      }
-
-      await Camera.requestPermissions({ permissions: ['camera'] });
-
-      const photo = await Camera.getPhoto({
-        source: CameraSource.Camera,
-        resultType: CameraResultType.Base64,
-        quality: 80,
-        allowEditing: false,
-        saveToGallery: false
-      });
-
-      this.poleImagePreview = `data:image/jpeg;base64,${photo.base64String}`;
-      this.polePhotoConfirmed = false;
-
-      const byteString = atob(photo.base64String!);
-      const arrayBuffer = new ArrayBuffer(byteString.length);
-      const uint8Array = new Uint8Array(arrayBuffer);
-
-      for (let i = 0; i < byteString.length; i++) {
-        uint8Array[i] = byteString.charCodeAt(i);
-      }
-
-      const blob = new Blob([uint8Array], { type: 'image/jpeg' });
-      const file = new File([blob], `poste_${Date.now()}.jpg`, { type: 'image/jpeg' });
-
-      this.form.patchValue({ pole_image: file });
-    } catch {
-      this.toast.error('Não foi possível abrir a câmera.');
-    }
+    this.captureAndSet('pole_image', 'pole');
   }
 
   confirmPolePhoto() {
@@ -277,7 +252,6 @@ export class PoleCreateComponent implements OnInit {
     this.polePhotoConfirmed = false;
     this.form.patchValue({ pole_image: null });
   }
-
 
   loadOptions(): void {
     this.loading = true;
@@ -339,7 +313,7 @@ export class PoleCreateComponent implements OnInit {
     this.loading = true;
     this.poleService.getByQrCode(qrcode).subscribe({
       next: (poste) => {
-        if(poste.id){
+        if (poste.id) {
           this.toast.success('Informações encontradas com sucesso!')
           this.poleExist = true;
           this.form.patchValue(poste);
@@ -354,7 +328,7 @@ export class PoleCreateComponent implements OnInit {
             this.poleImagePreview = poste.pole_image_url;
             this.polePhotoConfirmed = true;
           }
-        }else{
+        } else {
           this.poleExist = false;
           this.loading = false;
         }
@@ -369,7 +343,8 @@ export class PoleCreateComponent implements OnInit {
   submit() {
     if (this.form.invalid) {
       this.toast.error('Preencha todos os campos obrigatórios');
-    };
+      return;
+    }
 
     this.loading = true;
 
@@ -379,20 +354,20 @@ export class PoleCreateComponent implements OnInit {
       if (value !== null && value !== undefined) {
         formData.append(key, value as any);
       }
-    });    
+    });
 
     const id = this.form.get('id').value;
 
-    if(id){
+    if (id) {
       this.update(id, formData);
-    }else{
+    } else {
       this.create(formData);
     }
   }
 
-  public create(formData){
+  public create(formData) {
     this.poleService.create(formData).subscribe({
-      next: (res) => {
+      next: () => {
         this.toast.success('Poste cadastrado com sucesso!');
         this.form.reset();
         this.loading = false;
@@ -405,9 +380,9 @@ export class PoleCreateComponent implements OnInit {
     });
   }
 
-  public update(id, formData){
+  public update(id, formData) {
     this.poleService.update(id, formData).subscribe({
-      next: (res) => {
+      next: () => {
         this.toast.success('Poste atualizado com sucesso!');
         this.form.reset();
         this.loading = false;
@@ -418,9 +393,9 @@ export class PoleCreateComponent implements OnInit {
         this.loading = false;
       }
     });
-  }  
+  }
 
-  public reset(){
+  public reset() {
     this.qrcodeDetected = false;
     this.poleExist = false;
   }

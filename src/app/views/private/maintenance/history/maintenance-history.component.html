@@ -32,6 +32,7 @@
       <h4>Evidência de antes</h4>
       <div class="col-md-6 text-center">
         <img
+          *ngIf="selected.photo_path"
           [src]="selected.photo_path"
           alt="Evidência"
           class="img-fluid rounded border"
@@ -43,6 +44,7 @@
       <h4>Evidência da manutenção</h4>
       <div class="col-md-6 text-center">
         <img
+          *ngIf="selected.conclusion_photo_path"
           [src]="selected.conclusion_photo_path"
           alt="Evidência"
           class="img-fluid rounded border"

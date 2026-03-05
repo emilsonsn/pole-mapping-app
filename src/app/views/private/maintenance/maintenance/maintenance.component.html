@@ -1,3 +1,4 @@
+<!-- maintenance.component.html -->
 <div class="container mt-4">
   <h3 class="fw-bold mb-3">Nova Manutenção</h3>
 
@@ -17,15 +18,14 @@
       mat-raised-button
       color="accent"
       class="mt-2"
+      type="button"
       (click)="confirmManualQrCode()"
     >
       Confirmar QR Code
     </button>
   </div>
 
-
   <form *ngIf="form.get('pole_id')?.value" [formGroup]="form" (ngSubmit)="submit()">
-      <!-- Geolocalização -->
     <div class="row">
       <div class="col-md-6 mb-3">
         <mat-form-field appearance="outline" class="w-100">
@@ -33,6 +33,12 @@
           <input matInput formControlName="address" readonly />
         </mat-form-field>
       </div>
+      <div class="col-md-6 mb-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Número</mat-label>
+          <input matInput formControlName="number" readonly />
+        </mat-form-field>
+      </div>      
       <div class="col-md-6 mb-3">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Bairro</mat-label>
@@ -47,75 +53,73 @@
       </div>
     </div>
 
-      <div class="mb-3" *ngIf="!isFinishing">
+    <div class="mb-3" *ngIf="!isFinishing">
+      <button
+        mat-raised-button
+        color="accent"
+        type="button"
+        (click)="takePhoto()"
+      >
+        Tirar Evidência Fotográfica
+      </button>
+    </div>
+
+    <div *ngIf="!isFinishing">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Descrição (inicial)</mat-label>
+        <textarea matInput formControlName="initial_description"></textarea>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="isFinishing">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Descrição da manutenção (final)</mat-label>
+        <textarea matInput formControlName="final_description"></textarea>
+      </mat-form-field>
+
+      <button mat-raised-button color="accent" type="button" (click)="takeConclusionPhoto()">
+        Tirar Foto Final da Correção
+      </button>
+    </div>
+
+    <div *ngIf="imagePreview" class="mb-3 text-center">
+      <img
+        [src]="imagePreview"
+        alt="Preview"
+        class="img-thumbnail mb-2"
+        style="max-width: 300px;"
+      />
+      <div>
         <button
-          mat-raised-button
-          color="accent"
-          type="button"
-          (click)="takePhoto()"
-        >
-          Tirar Evidência Fotográfica
-        </button>
-      </div>
-
-      <div *ngIf="!isFinishing">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Descrição (inicial)</mat-label>
-          <textarea matInput formControlName="initial_description"></textarea>
-        </mat-form-field>
-      </div>
-
-      <div *ngIf="isFinishing">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Descrição da manutenção (final)</mat-label>
-          <textarea matInput formControlName="final_description"></textarea>
-        </mat-form-field>
-
-        <button mat-raised-button color="accent" (click)="takeConclusionPhoto()">
-          Tirar Foto Final da Correção
-        </button>
-      </div>
-
-
-      <!-- Preview e confirmação -->
-      <div *ngIf="imagePreview" class="mb-3 text-center">
-        <img
-          [src]="imagePreview"
-          alt="Preview"
-          class="img-thumbnail mb-2"
-          style="max-width: 300px;"
-        />
-        <div>
-          <button
-            mat-button
-            color="primary"
-            (click)="confirmPhoto()"
-            [disabled]="photoConfirmed"
-          >
-            Confirmar Foto
-          </button>
-          <button mat-button color="warn" (click)="discardPhoto()">
-            Descartar Foto
-          </button>
-        </div>
-      </div>
-
-      <!-- Submit -->
-      <div class="text-end mt-4">
-        <button
-          mat-raised-button
+          mat-button
           color="primary"
-          type="submit"
-          [disabled]="!form.valid || !photoConfirmed || loading"
+          type="button"
+          (click)="confirmPhoto()"
+          [disabled]="(!isFinishing && photoConfirmedInitial) || (isFinishing && photoConfirmedFinal)"
         >
-          <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
-          <span *ngIf="!loading">Enviar Dados</span>
+          Confirmar Foto
+        </button>
+        <button mat-button color="warn" type="button" (click)="discardPhoto()">
+          Descartar Foto
         </button>
       </div>
+    </div>
+
+    <div class="text-end mt-4">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="!form.valid || (isFinishing ? !photoConfirmedFinal : !photoConfirmedInitial) || loading"
+      >
+        <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+        <span *ngIf="!loading">Enviar Dados</span>
+      </button>
+    </div>
   </form>
 </div>
 
-<div *ngIf="loading" 
+<div *ngIf="loading"
      class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-50">
   <mat-spinner></mat-spinner>
 </div>

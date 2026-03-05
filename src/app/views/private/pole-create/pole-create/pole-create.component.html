@@ -1,3 +1,4 @@
+<!-- pole-create.component.html -->
 <div *ngIf="!qrcodeDetected" class="text-center">
   <button class="btn btn-primary" (click)="scanQRCode()">Escanear QR Code</button>
 
@@ -9,14 +10,13 @@
   </mat-form-field>
 
   <div class="mt-2">
-    <button class="btn btn-success" (click)="confirmManualQrCode()">Confirmar</button>
+    <button class="btn btn-success" type="button" (click)="confirmManualQrCode()">Confirmar</button>
   </div>
 
   <p *ngIf="qrResult" class="alert alert-success text-center">
     QR Code lido: {{ qrResult }}
   </p>
 </div>
-
 
 <form [formGroup]="form" (ngSubmit)="submit()" *ngIf="qrcodeDetected">
   <div class="form-grid row">
@@ -172,10 +172,10 @@
       />
 
       <div class="mt-2">
-        <button mat-button color="primary" (click)="confirmPolePhoto()" [disabled]="polePhotoConfirmed">
+        <button mat-button color="primary" type="button" (click)="confirmPolePhoto()" [disabled]="polePhotoConfirmed">
           Confirmar Foto
         </button>
-        <button mat-button color="warn" (click)="discardPolePhoto()">
+        <button mat-button color="warn" type="button" (click)="discardPolePhoto()">
           Descartar Foto
         </button>
       </div>
@@ -200,10 +200,10 @@
       />
 
       <div class="mt-2" *ngIf="!poleExist">
-        <button mat-button color="primary" (click)="confirmRelayPhoto()" [disabled]="relayPhotoConfirmed">
+        <button mat-button color="primary" type="button" (click)="confirmRelayPhoto()" [disabled]="relayPhotoConfirmed">
           Confirmar Foto
         </button>
-        <button mat-button color="warn" (click)="discardRelayPhoto()">
+        <button mat-button color="warn" type="button" (click)="discardRelayPhoto()">
           Descartar Foto
         </button>
       </div>
@@ -211,7 +211,7 @@
   </div>
 
   <div class="text-end mb-2">
-    <button matRipple id="submit" class="btn btn-primary" [disabled]="loading">
+    <button matRipple id="submit" type="submit" class="btn btn-primary" [disabled]="loading">
       Salvar Poste
     </button>
   </div>
@@ -219,7 +219,7 @@
 
 <div *ngIf="qrcodeDetected && poleExist" class="alert alert-info">
   Poste já cadastrado! Dados carregados.
-    <button matRipple (click)="reset()" class="btn btn-primary mt-2">
-      Voltar para o cadastro
-    </button>
+  <button matRipple type="button" (click)="reset()" class="btn btn-primary mt-2">
+    Voltar para o cadastro
+  </button>
 </div>
