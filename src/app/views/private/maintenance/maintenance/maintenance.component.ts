@@ -24,6 +24,7 @@ export class MaintenanceComponent {
   manualQrCode = this.fb.control('');
   photoConfirmedInitial = false;
   photoConfirmedFinal = false;
+  private redirectToRegisterAfterFinish = false;
 
   constructor(
     private fb: FormBuilder,
@@ -306,8 +307,12 @@ export class MaintenanceComponent {
         this.resetPhotoState();
         this.loading = false;
 
-        localStorage.setItem('AUTO_QRCODE_FROM_MAINTENANCE', this.qrcode);
-        this.routeService.navigate(['/painel/register']);
+        if (this.redirectToRegisterAfterFinish) {
+          localStorage.setItem('AUTO_QRCODE_FROM_MAINTENANCE', this.qrcode);
+          this.routeService.navigate(['/painel/register']);
+        } else {
+          this.routeService.navigate(['/painel/home']);
+        }
       },
       error: (error) => {
         this.toast.error('Erro ao enviar manutenção.');
