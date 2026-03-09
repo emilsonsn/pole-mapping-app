@@ -70,7 +70,7 @@ export class PoleCreateComponent implements OnInit {
       latitude: ['', Validators.required],
       longitude: ['', Validators.required],
       address: ['', Validators.required],
-      number: [''],
+      number: ['', Validators.required],
       neighborhood: ['', Validators.required],
       city: ['', Validators.required],
       type_id: ['', Validators.required],

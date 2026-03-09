@@ -91,6 +91,7 @@ export class MaintenanceComponent {
               this.pendingMaintenance = null;
               this.isFinishing = false;
             }
+            this.updateValidators();
           } else {
             this.toast.error('Poste não encontrado!');
           }
@@ -138,12 +139,13 @@ export class MaintenanceComponent {
 
           if (pole.maintenances?.length > 0) {
             this.pendingMaintenance = pole.maintenances[0];
-            this.isFinishing = true;
+            this.isFinishing = true;            
             this.toast.info('Este poste possui manutenção pendente. Finalize abaixo.');
           } else {
             this.pendingMaintenance = null;
             this.isFinishing = false;
           }
+          this.updateValidators();
         } else {
           this.toast.error('Poste não encontrado!');
         }
@@ -156,6 +158,22 @@ export class MaintenanceComponent {
       }
     });
   }
+
+  private updateValidators() {
+    const initial = this.form.get('initial_description');
+    const final = this.form.get('final_description');
+
+    if (this.isFinishing) {
+      initial?.clearValidators();
+      final?.setValidators([Validators.required]);
+    } else {
+      initial?.setValidators([Validators.required]);
+      final?.clearValidators();
+    }
+
+    initial?.updateValueAndValidity();
+    final?.updateValueAndValidity();
+  }  
 
   private requiredPhotoField(): 'photo' | 'conclusion_photo' {
     return this.isFinishing ? 'conclusion_photo' : 'photo';
