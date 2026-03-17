@@ -197,17 +197,36 @@ export class MaintenanceComponent {
     }
 
     try {
-      await Camera.requestPermissions({ permissions: ['camera'] });
+      // Request only camera permission
+      const cameraPermission = await Camera.requestPermissions({ permissions: ['camera'] });
 
+      if (cameraPermission.camera !== 'granted') {
+        this.toast.error('Permissão de câmera negada.');
+        return;
+      }
+
+      // Optimized camera settings for low-end devices
       const photo = await Camera.getPhoto({
         source: CameraSource.Camera,
-        resultType: CameraResultType.Uri,
-        quality: 70,
+        resultType: CameraResultType.Base64, // Base64 é mais leve que URI em dispositivos fracos
+        quality: 50, // Reduzido de 70 para 50 - menor consumo de memória
+        width: 1024, // Limita largura máxima - evita imagens muito grandes
+        height: 1024, // Limita altura máxima
         allowEditing: false,
-        saveToGallery: false
+        saveToGallery: false,
+        correctOrientation: true, // Corrige orientação automaticamente
+        promptLabelHeader: 'Câmera',
+        promptLabelCancel: 'Cancelar',
+        promptLabelPicture: 'Câmera',
       });
 
-      this.imagePreview = photo.webPath ?? null;
+      if (!photo.base64String) {
+        this.toast.error('Não foi possível obter a foto.');
+        return;
+      }
+
+      // Set preview using base64 data URL
+      this.imagePreview = `data:image/jpeg;base64,${photo.base64String}`;
 
       if (field === 'photo') {
         this.photoConfirmedInitial = false;
@@ -215,18 +234,32 @@ export class MaintenanceComponent {
         this.photoConfirmedFinal = false;
       }
 
-      if (!photo.webPath) {
-        this.toast.error('Não foi possível obter a foto.');
-        return;
+      // Convert base64 to File directly - more memory efficient
+      const byteCharacters = atob(photo.base64String);
+      const byteNumbers = new Array(byteCharacters.length);
+      
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
       }
-
-      const blob = await (await fetch(photo.webPath)).blob();
-      const file = new File([blob], `evidencia_${Date.now()}.jpg`, { type: blob.type || 'image/jpeg' });
+      
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'image/jpeg' });
+      const file = new File([blob], `evidencia_${Date.now()}.jpg`, { type: 'image/jpeg' });
 
       this.form.patchValue({ [field]: file });
+
+      // Clear base64 string from memory after conversion
+      (photo as any).base64String = null;
+
     } catch (e: any) {
-      this.toast.error('Não foi possível abrir a câmera.');
       console.error('Erro ao tirar foto', e);
+      
+      // Handle user cancellation gracefully
+      if (e?.message?.includes('cancelled') || e?.message?.includes('canceled')) {
+        return; // User cancelled - no error message needed
+      }
+      
+      this.toast.error('Não foi possível abrir a câmera.');
     }
   }
 

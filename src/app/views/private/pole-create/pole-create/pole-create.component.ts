@@ -184,17 +184,38 @@ export class PoleCreateComponent implements OnInit {
         return;
       }
 
-      await Camera.requestPermissions({ permissions: ['camera'] });
-
-      const photo = await Camera.getPhoto({
-        source: CameraSource.Camera,
-        resultType: CameraResultType.Uri,
-        quality: 70,
-        allowEditing: false,
-        saveToGallery: false
+      // Request only camera permission - photos permission not needed for camera-only
+      const cameraPermission = await Camera.requestPermissions({ 
+        permissions: ['camera'] 
       });
 
-      const preview = photo.webPath ?? null;
+      if (cameraPermission.camera !== 'granted') {
+        this.toast.error('Permissão de câmera negada.');
+        return;
+      }
+
+      // Optimized camera settings for low-end devices
+      const photo = await Camera.getPhoto({
+        source: CameraSource.Camera,
+        resultType: CameraResultType.Base64, // Base64 é mais leve que URI em dispositivos fracos
+        quality: 50, // Reduzido de 70 para 50 - menor consumo de memória
+        width: 1024, // Limita largura máxima - evita imagens muito grandes
+        height: 1024, // Limita altura máxima
+        allowEditing: false,
+        saveToGallery: false,
+        correctOrientation: true, // Corrige orientação automaticamente
+        promptLabelHeader: 'Câmera',
+        promptLabelCancel: 'Cancelar',
+        promptLabelPicture: 'Câmera',
+      });
+
+      if (!photo.base64String) {
+        this.toast.error('Não foi possível obter a foto.');
+        return;
+      }
+
+      // Set preview using base64 data URL
+      const preview = `data:image/jpeg;base64,${photo.base64String}`;
 
       if (kind === 'relay') {
         this.relayImagePreview = preview;
@@ -204,17 +225,32 @@ export class PoleCreateComponent implements OnInit {
         this.polePhotoConfirmed = false;
       }
 
-      if (!photo.webPath) {
-        this.toast.error('Não foi possível obter a foto.');
-        return;
+      // Convert base64 to File directly - more memory efficient
+      const byteCharacters = atob(photo.base64String);
+      const byteNumbers = new Array(byteCharacters.length);
+      
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
       }
-
-      const blob = await (await fetch(photo.webPath)).blob();
+      
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'image/jpeg' });
       const filename = kind === 'relay' ? `rele_${Date.now()}.jpg` : `poste_${Date.now()}.jpg`;
-      const file = new File([blob], filename, { type: blob.type || 'image/jpeg' });
+      const file = new File([blob], filename, { type: 'image/jpeg' });
 
       this.form.patchValue({ [field]: file });
-    } catch (e) {
+
+      // Clear base64 string from memory after conversion
+      (photo as any).base64String = null;
+
+    } catch (e: any) {
+      console.error('Erro ao capturar foto:', e);
+      
+      // Handle user cancellation gracefully
+      if (e?.message?.includes('cancelled') || e?.message?.includes('canceled')) {
+        return; // User cancelled - no error message needed
+      }
+      
       this.toast.error('Não foi possível abrir a câmera.');
     }
   }
