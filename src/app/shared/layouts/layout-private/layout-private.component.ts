@@ -44,7 +44,13 @@ export class LayoutPrivateComponent {
       icon: 'fa-solid fa-list',
       route: '/painel/maintenance/history',
       active: true
-    }
+    },
+    {
+      label: 'Histórico de postes',
+      icon: 'fa-solid fa-list',
+      route: '/painel/register/list',
+      active: true
+    }    
   ]
 
   protected isMobile: boolean = window.innerWidth >= 1000;

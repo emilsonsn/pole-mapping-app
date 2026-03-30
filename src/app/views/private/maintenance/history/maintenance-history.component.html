@@ -17,6 +17,7 @@
       <div class="col-md-6">
         <p><strong>Data:</strong> {{ selected.created_at | date:'fullDate' }}</p>
         <p><strong>Hora:</strong> {{ selected.created_at | date:'shortTime' }}</p>
+        <p><strong>QR Code:</strong> {{ selected.pole?.qrcode }}</p>
         <p><strong>Endereço:</strong> {{ selected.address }} - {{ selected.neighborhood }} - {{ selected.city }}</p>
         <p><strong>Latitude:</strong> {{ selected.latitude }}</p>
         <p><strong>Longitude:</strong> {{ selected.longitude }}</p>
@@ -24,21 +25,25 @@
           <strong>Descrição (inicial):</strong> <br>
           {{ selected.initial_description }}
         </p>
+
+        <div>
+          <h4>Evidência de antes</h4>
+          <div class="col-md-6 text-center">
+            <img
+              *ngIf="selected.photo_path"
+              [src]="selected.photo_path"
+              alt="Evidência"
+              class="img-fluid rounded border"
+              style="max-height:300px"
+              (click)="openImage(selected.photo_path)"
+            />
+          </div>          
+        </div>
+
         <p>
           <strong>Descrição do serviço (final):</strong> <br>
           {{ selected.final_description }}
         </p>
-      </div>
-      <h4>Evidência de antes</h4>
-      <div class="col-md-6 text-center">
-        <img
-          *ngIf="selected.photo_path"
-          [src]="selected.photo_path"
-          alt="Evidência"
-          class="img-fluid rounded border"
-          style="max-height:300px"
-          (click)="openImage(selected.photo_path)"
-        />
       </div>
 
       <h4>Evidência da manutenção</h4>
